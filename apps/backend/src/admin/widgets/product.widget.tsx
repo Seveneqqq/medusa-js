@@ -49,8 +49,15 @@ const ProductWidget = () => {
         if (uploadedFiles.length > 0) {
             const formData = new FormData();
 
+            let productUrl = location.href;
+            let splittedUrl = productUrl.split('/');
+
+            let id = splittedUrl[splittedUrl.length - 1];
+            
+
             // Add files to FormData
             uploadedFiles.forEach(item => {
+                formData.append('product_id', id); // Add product ID
                 formData.append('files', item.file); // Add files
                 formData.append('language', item.language); // Add language
                 formData.append('documentType', item.documentType); // Add document type
@@ -73,11 +80,9 @@ const ProductWidget = () => {
                     setUploadedFiles([]);
                 } else {
                     console.error('File save failed:', response.statusText);
-                    alert(`File save failed: ${response.statusText}`); // Notify user of failure
                 }
             } catch (error) {
                 console.error('Error saving files:', error);
-                alert(`Error saving files: ${error.message}`); // Notify user of error
             }
         } else {
             alert("No files to save.");
