@@ -1,12 +1,12 @@
-// src/components/ProductDocuments.tsx
 'use client'
 import { HttpTypes } from "@medusajs/types";
 
 const fetchDocuments = async (productId: string) => {
-  const response = await fetch(`http://localhost:9000/product-documents/get`, {
+  const response = await fetch(`http://localhost:9000/store/product-documents/get`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+      "content-Type": "application/json",
     },
     body: JSON.stringify({ product_id: productId }),
   });

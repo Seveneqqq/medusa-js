@@ -82,22 +82,22 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
 
     try {
       
-      let response = await fetch(`http://localhost:9000/product-documents/download-file`,{
+      let response = await fetch(`http://localhost:9000/store/product-documents/download-file`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
         },
         body: JSON.stringify({ file_name: fileName, product_id: product_id }),
       });
       
       if (response.ok) {
-        // Użycie Blob do pobrania pliku
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = fileName; // Ustawienie nazwy pliku do pobrania
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -116,27 +116,28 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/product-documents/get?product_id=${product.id}`, {
+        const response = await fetch(`http://localhost:9000/store/product-documents/get?product_id=${product.id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
           },
         });
 
         const data = await response.json();
-        setDocuments(data); // Set the documents state
+        setDocuments(data); 
       } catch (error) {
         console.error("Error fetching documents:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false); 
       }
     };
 
     fetchDocuments();
-  }, [product.id]); // Re-fetch if the product ID changes
+  }, [product.id]);
 
   if (loading) {
-    return <p>Loading documents...</p>; // Display loading state
+    return <p>Loading documents...</p>; 
   }
 
   return (
