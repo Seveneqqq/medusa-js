@@ -94,7 +94,14 @@ export async function signup(_currentState: unknown, formData: FormData) {
     return `Account created, please login.`;
 
   } catch (error: any) {
-    return error.toString();
+    let errorMsg = error.toString();
+
+    if(!errorMsg.includes("Unauthorized")){
+      return errorMsg;
+    }
+    else{
+      return "Account created. Wait for approval."
+    }
   }
 }
 
@@ -131,11 +138,15 @@ export async function login(_currentState: unknown, formData: FormData) {
   }
 }
 
+
 async function checkApproved(email: string) {
 
-  const response = await fetch(`http://localhost:9000/customer/get-customer-approved?email=${email}`);
+  const response = await fetch(`http://localhost:9000/store/customer/get-customer-approved?email=${email}`,{
+    headers: {
+      "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+    }
+  });
   const data = await response.json();
-
 
   return data.approved;
 }

@@ -10,10 +10,12 @@ const pool = new Pool({
 
 const corsOptions = {
     origin: process.env.STORE_CORS,
-    credentials: true,
+    credentials: false,
 };
 
 export const GET = async (req: any, res: any) => {
+
+    
     cors(corsOptions)(req, res, async () => {
         try {
             const productId = req.query.product_id; 
@@ -35,4 +37,4 @@ export const GET = async (req: any, res: any) => {
 
 export const OPTIONS = cors(corsOptions);
 
-export const CORS = false;
+export const CORS = true;
