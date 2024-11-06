@@ -82,7 +82,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
 
     try {
       
-      let response = await fetch(`http://localhost:9000/store/product-documents/download-file`,{
+      let response = await fetch(`http://localhost:9000/store/products-documents/download-file`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,11 +115,13 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
 
   useEffect(() => {
     const fetchDocuments = async () => {
+
+      console.log('documents');
+
       try {
-        const response = await fetch(`http://localhost:9000/store/product-documents/get?product_id=${product.id}`, {
+        const response = await fetch(`http://localhost:9000/store/products-documents/get?product_id=${product.id}`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
           },
         });
