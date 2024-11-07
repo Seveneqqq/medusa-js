@@ -2,7 +2,7 @@ import { model } from "@medusajs/framework/utils"
 
 const CustomerApproved = model.define("customer_approved", {
   id: model.id().primaryKey(),
-  email: model.text(),
+  user_id: model.text(),
   approved: model.boolean().default(false),
 })
 

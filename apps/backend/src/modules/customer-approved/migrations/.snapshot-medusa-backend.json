@@ -15,8 +15,8 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "email": {
-          "name": "email",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
