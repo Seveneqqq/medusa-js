@@ -6,20 +6,11 @@
   "tables": [
     {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
-        },
         "user_id": {
           "name": "user_id",
           "type": "text",
           "unsigned": false,
-          "autoincrement": false,
+          "autoincrement": true,
           "primary": false,
           "nullable": false,
           "mappedType": "text"
@@ -41,7 +32,7 @@
         {
           "keyName": "customer_approved_pkey",
           "columnNames": [
-            "id"
+            "user_id"
           ],
           "composite": false,
           "primary": true,
