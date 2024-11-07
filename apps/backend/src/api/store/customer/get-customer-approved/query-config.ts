@@ -2,7 +2,6 @@
 export const approvedFields = [
     "user_id",
     "approved",
-    
   ];
   
   export const approvedQueryConfig = {
@@ -12,7 +11,7 @@ export const approvedFields = [
     },
     retrieve: {
       defaults: approvedFields,
-      isList: true,
+      isList: false,
     },
   };
   

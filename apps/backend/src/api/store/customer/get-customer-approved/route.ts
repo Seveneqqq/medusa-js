@@ -17,13 +17,31 @@ const corsOptions = {
     credentials: true,
 };
 
-export const GET = async (req: any, res: any) => {
+export const GET = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) => {
     cors(corsOptions)(req, res, async () => {
         
-        const email = req.query.email;    
-        
-        res.status(200).json(email);
+        try {
+            
 
+            const user_id = req.query.user_id; 
+            
+            const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
+            
+            const { data: approved, metadata } = await query.graph({
+                entity: "customer_approved",
+                fields: ['*'],
+                
+              });
+        
+            res.status(200).json(approved);
+
+        } catch (error) {
+            console.log('1213  ' +error)
+            res.json({error:error.message});
+        }
     });
 };
 
