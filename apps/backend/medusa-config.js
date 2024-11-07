@@ -33,6 +33,9 @@ module.exports = defineConfig({
     documentModuleService: {
       resolve: "./modules/documents",
     },
+    customerApprovedModuleService: {
+      resolve: "./src/modules/customer-approved",
+    },
     b2bAccountService: {
       resolve: "./src/modules/b2b-accounts",
     },

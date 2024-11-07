@@ -18,7 +18,7 @@ export const POST = async (
   const fields = req.remoteQueryConfig?.fields || accountsQueryConfig.list.defaults;
 
 const { data: customers, metadata } = await query.graph({
-  entity: "customer",
+  entity: "b2b_account",
   fields: ['*'],
   filters: req.filterableFields,
 });

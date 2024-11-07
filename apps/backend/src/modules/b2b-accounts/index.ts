@@ -6,4 +6,5 @@ export const B2B_ACCOUNT_MODULE = "b2bAccountService"
 
 export default Module(B2B_ACCOUNT_MODULE, {
   service: B2BAccountService,
+
 })
