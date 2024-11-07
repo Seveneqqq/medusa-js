@@ -10,7 +10,7 @@
           "name": "user_id",
           "type": "text",
           "unsigned": false,
-          "autoincrement": true,
+          "autoincrement": false,
           "primary": false,
           "nullable": false,
           "mappedType": "text"
