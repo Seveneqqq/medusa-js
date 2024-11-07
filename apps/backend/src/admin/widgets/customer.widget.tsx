@@ -119,6 +119,20 @@ const CustomerWidget = () => {
         }
     };
 
+    const test = async() =>{
+        const response = await fetch("http://localhost:9000/admin/customers/get-accounts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        });
+
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+    }
+
     return (
         <Container className="divide-y p-0">
             <div className="flex items-center justify-between px-6 py-4">
@@ -193,6 +207,7 @@ const CustomerWidget = () => {
                     />
                 )}
             </div>
+            <Button onClick={test}>Click</Button>
         </Container>
     );
 };
