@@ -52,10 +52,14 @@ export const GET = async (
          const customer_approved =
             await customerApprovedModuleService.listCustomerApproveds({
                user_id: id,
-            });
+            },
+            {
+              select: ["approved"],
+            }
+          );
       
-         res.json({
-            customer_approved,"id": id, "data": "data"
+         res.status(200).json({
+            customer_approved
          });
         }catch(error){
             res.status(500).json({ message: error.message });
