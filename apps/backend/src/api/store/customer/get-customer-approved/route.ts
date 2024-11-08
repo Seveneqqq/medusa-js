@@ -9,6 +9,9 @@ import type {
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { AdminCreateApprovedType } from "./validators";
 import { approvedQueryConfig } from "./query-config";
+import { CUSTOMER_APPROVED_MODULE } from 'src/modules/customer-approved';
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import CustomerApprovedModuleService from "src/modules/customer-approved/service";
 
 dotenv.config();
 
@@ -23,25 +26,41 @@ export const GET = async (
 ) => {
     cors(corsOptions)(req, res, async () => {
         
-        try {
-            
+        try{
+        const query = req.scope.resolve<RemoteQueryFunction>(
+            ContainerRegistrationKeys.QUERY
+         );
+      
+         const id  = req.query.id;
 
-            const user_id = req.query.user_id; 
-            
-            const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
-            
-            const { data: approved, metadata } = await query.graph({
-                entity: "customer_approved",
-                fields: ['*'],
-                
-              });
-        
-            res.status(200).json(approved);
-
-        } catch (error) {
-            console.log('1213  ' +error)
-            res.json({error:error.message});
+        //  const {
+        //     data: [customer_approved],
+        //  } = await query.graph(
+        //     {
+        //        entity: "customer_approved",
+        //        fields: [],
+        //        filters: { id },
+        //     },
+        //     { throwIfKeyNotFound: true }
+        //  );
+      
+         const customerApprovedModuleService =
+            req.scope.resolve<CustomerApprovedModuleService>(
+               "customerApprovedModuleService"
+            );
+      
+         const customer_approved =
+            await customerApprovedModuleService.listCustomerApproveds({
+               user_id: id,
+            });
+      
+         res.json({
+            customer_approved,"id": id, "data": "data"
+         });
+        }catch(error){
+            res.status(500).json({ message: error.message });
         }
+
     });
 };
 
