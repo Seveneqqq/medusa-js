@@ -54,7 +54,7 @@ export const GET = async (
                user_id: id,
             },
             {
-              select: ["approved"],
+              select: ["user_id", "approved"],
             }
           );
       
