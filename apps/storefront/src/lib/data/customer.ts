@@ -15,6 +15,7 @@ import {
   removeAuthToken,
   setAuthToken,
 } from "./cookies"
+import { Customer } from "@medusajs/js-sdk/dist/admin/customer"
 
 export const getCustomer = cache(
   async function (): Promise<B2BCustomer | null> {
@@ -148,7 +149,7 @@ async function checkApproved(email: string) {
   });
   const data = await response.json();
 
-  return data.approved;
+  return data.customer_approved[0].approved;
 }
 
 export async function signout(countryCode: string, customerId: string) {

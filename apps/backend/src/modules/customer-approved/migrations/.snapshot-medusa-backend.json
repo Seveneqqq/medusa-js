@@ -6,8 +6,8 @@
   "tables": [
     {
       "columns": {
-        "user_id": {
-          "name": "user_id",
+        "email": {
+          "name": "email",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -64,7 +64,7 @@
         {
           "keyName": "customer_approved_pkey",
           "columnNames": [
-            "user_id"
+            "email"
           ],
           "composite": false,
           "primary": true,

@@ -31,7 +31,7 @@ export const GET = async (
             ContainerRegistrationKeys.QUERY
          );
       
-         const id  = req.query.id;
+         const email  = req.query.email;
 
         //  const {
         //     data: [customer_approved],
@@ -51,10 +51,10 @@ export const GET = async (
       
          const customer_approved =
             await customerApprovedModuleService.listCustomerApproveds({
-               user_id: id,
+               email: email,
             },
             {
-              select: ["user_id", "approved"],
+              select: ["email", "approved"],
             }
           );
       
