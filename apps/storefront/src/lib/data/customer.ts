@@ -90,6 +90,8 @@ export async function signup(_currentState: unknown, formData: FormData) {
       console.log("error creating employee", err)
     })
 
+    await addToApproval(customerForm.email);
+
     revalidateTag(getCacheTag("customers"));
 
     return `Account created, please login.`;
@@ -103,6 +105,24 @@ export async function signup(_currentState: unknown, formData: FormData) {
     else{
       return "Account created. Wait for approval."
     }
+  }
+}
+
+async function addToApproval(email: string){
+
+  try{
+    const response = await fetch(`http://localhost:9000/store/customer/add-to-approval`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+    console.log("User added to approval ", data);
+  }catch(err){
+    console.error("Error adding to approval:", err);
   }
 }
 
