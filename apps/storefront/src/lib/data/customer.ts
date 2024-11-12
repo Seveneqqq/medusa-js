@@ -15,6 +15,7 @@ import {
   removeAuthToken,
   setAuthToken,
 } from "./cookies"
+import { Customer } from "@medusajs/js-sdk/dist/admin/customer"
 
 export const getCustomer = cache(
   async function (): Promise<B2BCustomer | null> {
@@ -43,6 +44,9 @@ export const updateCustomer = cache(async function (
 })
 
 export async function signup(_currentState: unknown, formData: FormData) {
+
+  await addToApproval(formData.get("email") as string);
+
   const password = formData.get("password") as string
   const customerForm = {
     email: formData.get("email") as string,
@@ -66,6 +70,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
       customHeaders
     )
 
+
+    
+
+
     const companyForm = {
       name: formData.get("company_name") as string,
       email: formData.get("email") as string,
@@ -78,7 +86,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       currency_code: formData.get("currency_code") as string,
     }
 
-    const createdCompany = await createCompany(companyForm)
+    const createdCompany = await createCompany(companyForm);
 
     const createdEmployee = await createEmployee({
       company_id: createdCompany?.id as string,
@@ -88,6 +96,8 @@ export async function signup(_currentState: unknown, formData: FormData) {
     }).catch((err) => {
       console.log("error creating employee", err)
     })
+
+    
 
     revalidateTag(getCacheTag("customers"));
 
@@ -102,6 +112,27 @@ export async function signup(_currentState: unknown, formData: FormData) {
     else{
       return "Account created. Wait for approval."
     }
+  }
+}
+
+async function addToApproval(email: string){
+
+  try{
+    const response = await fetch(`http://localhost:9000/store/customer/add-to-approval`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+      },
+      body: JSON.stringify({ "email": email }),
+    });
+
+    const data = await response.json();
+    console.log("User added to approval ", data);
+    return;
+
+  }catch(err){
+    console.error("Error adding to approval:", err);
   }
 }
 
@@ -148,7 +179,7 @@ async function checkApproved(email: string) {
   });
   const data = await response.json();
 
-  return data.approved;
+  return data.customer_approved[0].approved;
 }
 
 export async function signout(countryCode: string, customerId: string) {

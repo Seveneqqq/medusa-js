@@ -1,53 +1,70 @@
-import { Pool } from "pg";
+
 import dotenv from 'dotenv';
 import cors from 'cors';
 
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { AdminCreateApprovedType } from "./validators";
+import { approvedQueryConfig } from "./query-config";
+import { CUSTOMER_APPROVED_MODULE } from 'src/modules/customer-approved';
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import CustomerApprovedModuleService from "src/modules/customer-approved/service";
 
 dotenv.config();
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
 
 const corsOptions = {
     origin: process.env.STORE_CORS,
     credentials: true,
 };
 
-export const GET = async (req: any, res: any) => {
+export const GET = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) => {
     cors(corsOptions)(req, res, async () => {
-        try {
-            
-            const email = req.query.email;
+        
+        try{
+        const query = req.scope.resolve<RemoteQueryFunction>(
+            ContainerRegistrationKeys.QUERY
+         );
+      
+         const email  = req.query.email;
 
-            if (!email) {
-                return res.status(400).json({ 
-                    error: "Email is required" 
-                });
+        //  const {
+        //     data: [customer_approved],
+        //  } = await query.graph(
+        //     {
+        //        entity: "customer_approved",
+        //        fields: [],
+        //        filters: { id },
+        //     },
+        //     { throwIfKeyNotFound: true }
+        //  );
+      
+         const customerApprovedModuleService =
+            req.scope.resolve<CustomerApprovedModuleService>(
+               "customerApprovedModuleService"
+            );
+      
+         const customer_approved =
+            await customerApprovedModuleService.listCustomerApproveds({
+               email: email,
+            },
+            {
+              select: ["email", "approved"],
             }
-
-            const query = {
-                text: 'SELECT approved FROM customer WHERE email = $1',
-                values: [email],
-            };
-
-            const result = await pool.query(query);
-
-            if (result.rows.length === 0) {
-                return res.status(404).json({ 
-                    error: "Customer not found" 
-                });
-            }
-            return res.status(200).json({
-                approved: result.rows[0].approved
-            });
-
-        } catch (error) {
-            console.error('Database error:', error);
-            return res.status(500).json({ 
-                error: "Internal server error" 
-            });
+          );
+      
+         res.status(200).json({
+            customer_approved
+         });
+        }catch(error){
+            res.status(500).json({ message: error.message });
         }
+
     });
 };
 

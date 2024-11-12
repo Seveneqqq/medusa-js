@@ -6,17 +6,8 @@
   "tables": [
     {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "text"
-        },
-        "name": {
-          "name": "name",
+        "email": {
+          "name": "email",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -67,13 +58,13 @@
           "mappedType": "datetime"
         }
       },
-      "name": "b2b_account",
+      "name": "customer_approved",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "b2b_account_pkey",
+          "keyName": "customer_approved_pkey",
           "columnNames": [
-            "id"
+            "email"
           ],
           "composite": false,
           "primary": true,
