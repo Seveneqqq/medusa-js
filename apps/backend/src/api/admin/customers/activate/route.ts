@@ -6,9 +6,6 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteQueryFunction } from "@medusajs/framework/types";
 import CustomerApprovedModuleService from "src/modules/customer-approved/service";
 
-
-
-
 export const POST = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
@@ -17,8 +14,6 @@ export const POST = async (
     try {
 
         const { emails } : any = req.body;
-
-        console.log(emails);
 
         const query = req.scope.resolve<RemoteQueryFunction>(
             ContainerRegistrationKeys.QUERY
@@ -36,9 +31,6 @@ export const POST = async (
                 approved: true
             });
          });
-
-
-         
 
         res.status(200).json({ message: 'Success' });
 
