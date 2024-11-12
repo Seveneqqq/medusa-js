@@ -1,23 +1,34 @@
-import { Pool } from "pg";
-import dotenv from 'dotenv';
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import CustomerApprovedModuleService from "src/modules/customer-approved/service";
 
-dotenv.config();
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
 
-export const POST = async (req: any, res: any) => {
+
+export const POST = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+    ) => {
     
-    const usersId: string[] = req.body.customerIds;
+    try {
 
-    usersId.forEach(async (userId) => {
-        const sql = `
-            UPDATE customer SET approved = true WHERE id = '${userId}';
-        `;
-        await pool.query(sql);
-    });
+        const emails: string[] = req.body.emails;
 
-    res.status(200).json({ message: 'Success' });
+        const query = req.scope.resolve<RemoteQueryFunction>(
+            ContainerRegistrationKeys.QUERY
+         );
+    
+
+        res.status(200).json({ message: 'Success' });
+
+    } catch (error) {
+        
+    }
+
+    
 
 };
