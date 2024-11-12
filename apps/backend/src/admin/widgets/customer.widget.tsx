@@ -26,36 +26,40 @@ const CustomerWidget = () => {
    const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set());
 
    const fetchCustomers = async (page: number) => {
-       try {
-           setIsLoading(true);
-           const response = await fetch(
-               `http://localhost:9000/admin/customers/get-customers?page=${page}&limit=20`,
-               {
-                   method: "GET",
-                   headers: {
-                       "Content-Type": "application/json",
-                   },
-                   credentials: "include",
-               }
-           );
-           const data = await response.json();
+    try {
+        setIsLoading(true);
+        const response = await fetch(
+            `http://localhost:9000/admin/customers/get-customers?page=${page}&limit=20`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            }
+        );
+        const { customers_approved, meta } = await response.json();
+        
+        const filteredCustomers = (customers_approved || []).filter(
+            customer => !customer.approved
+        );
+        
+        setCustomers(filteredCustomers);
 
-           const customers_approved = data.customers_approved || [];
-           
-           setCustomers(customers_approved.filter(customer => !customer.approved));
-           
-           setMeta({
-               page: page,
-               limit: 20,
-               total: customers_approved.length,
-               pageCount: Math.ceil(customers_approved.length / 20)
-           });
-       } catch (error) {
-           console.error("Error fetching customers:", error);
-       } finally {
-           setIsLoading(false);
-       }
-   };
+        if (meta) {
+            setMeta({
+                page: meta.page,
+                limit: meta.limit,
+                total: meta.total,
+                pageCount: meta.pageCount
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching customers:", error);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
    const handleSwitchChange = async (email: string, checked: boolean) => {
        const newSelectedCustomers = new Set(selectedCustomers);
