@@ -48,12 +48,12 @@ const CustomerWidget = () => {
         }
     };
 
-    const handleSwitchChange = async (customerId: string, checked: boolean) => {
+    const handleSwitchChange = async (email: string, checked: boolean) => {
         const newSelectedCustomers = new Set(selectedCustomers);
         if (checked) {
-            newSelectedCustomers.add(customerId);
+            newSelectedCustomers.add(email);
         } else {
-            newSelectedCustomers.delete(customerId);
+            newSelectedCustomers.delete(email);
         }
         setSelectedCustomers(newSelectedCustomers);
         console.log("Selected customers:", Array.from(newSelectedCustomers));
@@ -71,7 +71,7 @@ const CustomerWidget = () => {
                 },
                 credentials: "include",
                 body: JSON.stringify({
-                    customerIds: Array.from(selectedCustomers)
+                    emails: Array.from(selectedCustomers)
                 })
             });
     
@@ -178,9 +178,9 @@ const CustomerWidget = () => {
                                 <Table.Row key={customer.id}>
                                     <Table.Cell>
                                         <Switch 
-                                            checked={selectedCustomers.has(customer.id)}
+                                            checked={selectedCustomers.has(customer.email)}
                                             onCheckedChange={(checked) => 
-                                                handleSwitchChange(customer.id, checked)
+                                                handleSwitchChange(customer.email, checked)
                                             }
                                         />
                                     </Table.Cell>

@@ -16,12 +16,29 @@ export const POST = async (
     
     try {
 
-        const emails: string[] = req.body.emails;
+        const { emails } : any = req.body;
+
+        console.log(emails);
 
         const query = req.scope.resolve<RemoteQueryFunction>(
             ContainerRegistrationKeys.QUERY
          );
     
+         const customerApprovedModuleService =
+         req.scope.resolve<CustomerApprovedModuleService>(
+            "customerApprovedModuleService"
+         );
+
+
+         emails.forEach(async (email) => {
+            const customer = await customerApprovedModuleService.updateCustomerApproveds({
+                email,
+                approved: true
+            });
+         });
+
+
+         
 
         res.status(200).json({ message: 'Success' });
 
