@@ -35,7 +35,8 @@ export const POST = async (
         res.status(200).json({ message: 'Success' });
 
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({ Error:error});
     }
 
     
