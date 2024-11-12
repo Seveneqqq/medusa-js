@@ -44,6 +44,9 @@ export const updateCustomer = cache(async function (
 })
 
 export async function signup(_currentState: unknown, formData: FormData) {
+
+  await addToApproval(formData.get("email") as string);
+
   const password = formData.get("password") as string
   const customerForm = {
     email: formData.get("email") as string,
@@ -67,6 +70,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
       customHeaders
     )
 
+
+    
+
+
     const companyForm = {
       name: formData.get("company_name") as string,
       email: formData.get("email") as string,
@@ -79,7 +86,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       currency_code: formData.get("currency_code") as string,
     }
 
-    const createdCompany = await createCompany(companyForm)
+    const createdCompany = await createCompany(companyForm);
 
     const createdEmployee = await createEmployee({
       company_id: createdCompany?.id as string,
@@ -90,7 +97,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       console.log("error creating employee", err)
     })
 
-    await addToApproval(customerForm.email);
+    
 
     revalidateTag(getCacheTag("customers"));
 
@@ -115,12 +122,15 @@ async function addToApproval(email: string){
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ "email": email }),
     });
 
     const data = await response.json();
     console.log("User added to approval ", data);
+    return;
+
   }catch(err){
     console.error("Error adding to approval:", err);
   }

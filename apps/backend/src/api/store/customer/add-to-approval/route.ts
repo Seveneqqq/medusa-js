@@ -24,6 +24,9 @@ export const POST = async (
         try {
 
             const {email} = req.body;
+
+            console.log('email:' +email);
+
             const { result } = await createApprovalWorkflow(req.scope).run({
                 input: req.body,
              });
