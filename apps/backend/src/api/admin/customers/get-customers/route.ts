@@ -15,7 +15,6 @@ export const GET = async (
 
     const { page, limit } = req.query;
 
-    // Konwersja string na number
     const pageNum = parseInt(page as string) || 0;
     const limitNum = parseInt(limit as string) || 20;
     const skip = limitNum * pageNum;
@@ -33,13 +32,8 @@ export const GET = async (
     },
   });
 
-  console.log(customers_approved)
-
   res.json({
     customers_approved,
-    // count: metadata!.count,
-    // offset: metadata!.skip,
-    // limit: metadata!.take,
   });
 
   }catch(err){

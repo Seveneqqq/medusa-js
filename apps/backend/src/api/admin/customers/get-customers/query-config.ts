@@ -1,19 +1,10 @@
 /* Company Query Config */
 export const accountsFields = [
-    "id",
-    "company_name",
-    "first_name",
-    "last_name",
     "email",
-    "phone",
-    "has_account",
-    "metadata",
+    "approved",
     "created_at",
     "updated_at",
-    "deleted_at",
-    "created_by",
-    "approved",
-    
+    "deleted_at"
   ];
   
   export const accountsQueryConfig = {
