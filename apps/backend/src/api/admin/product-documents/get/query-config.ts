@@ -1,16 +1,15 @@
 /* Company Query Config */
-export const approvedFields = [
-    "user_id",
-    "approved",
+export const documentFields = [
+    "product_id",
   ];
   
-  export const approvedQueryConfig = {
+  export const documentQueryConfig = {
     list: {
-      defaults: approvedFields,
+      defaults: documentFields,
       isList: true,
     },
     retrieve: {
-      defaults: approvedFields,
+      defaults: documentFields,
       isList: false,
     },
   };

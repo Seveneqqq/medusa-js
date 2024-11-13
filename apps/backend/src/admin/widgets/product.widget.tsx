@@ -10,7 +10,16 @@ const ProductWidget = () => {
     const [language, setLanguage] = useState<string>("");
     const [documentType, setDocumentType] = useState<string>("");
     const [uploadedFiles, setUploadedFiles] = useState<Array<{ fileName: string, language: string, documentType: string }>>([]);
-    const [relatedFiles, setRelatedFiles] = useState<Array<{ id:number | string, file_name: string, language: string, document_type: string }>>([]);
+    const [relatedFiles, setRelatedFiles] = useState<Array<{
+        id: number,
+        file_id: number,
+        file_name: string,
+        language: string,
+        document_type: string,
+        created_at: string,
+        updated_at: string,
+        deleted_at: null | string
+    }>>([]);
     const [selectedFiles, setSelectedFiles] = useState<Array<{ file_name: string, language: string, document_type: string }>>([]); 
     const [modalOpen, setModalOpen] = useState(false); 
     
@@ -98,6 +107,7 @@ const ProductWidget = () => {
             const result = await response.json();
             setRelatedFiles(result);
             console.log(result);
+            console.log('Updated');
         } catch (error) {
             console.error('Error fetching data:', error);
         }
