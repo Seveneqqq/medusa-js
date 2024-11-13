@@ -105,7 +105,7 @@ const ProductWidget = () => {
             }
 
             const result = await response.json();
-            setRelatedFiles(result);
+            setRelatedFiles(result.attachments);
             console.log(result);
             console.log('Updated');
         } catch (error) {
