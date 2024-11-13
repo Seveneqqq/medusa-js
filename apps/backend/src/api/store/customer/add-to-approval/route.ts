@@ -14,8 +14,6 @@ const corsOptions = {
     credentials: true,
 }
 
-
-
 export const POST = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
@@ -24,6 +22,28 @@ export const POST = async (
         try {
 
             const {email} = req.body;
+            console.log('email ' +email)
+
+
+            if (!email) {
+                return res.status(400).json({
+                  error: "Email is required"
+                });
+              }
+             
+              if (typeof email !== 'string') {
+                return res.status(400).json({
+                  error: "Email must be a string"
+                });
+              }
+             
+              const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+              if (!emailRegex.test(email)) {
+                return res.status(400).json({
+                  error: "Invalid email format"
+                });
+              }
+             
 
             console.log('email:' +email);
 
@@ -44,4 +64,4 @@ export const POST = async (
 
 export const OPTIONS = cors(corsOptions)
 
-export const CORS = false
+export const CORS = true

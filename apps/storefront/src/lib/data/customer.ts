@@ -45,8 +45,7 @@ export const updateCustomer = cache(async function (
 
 export async function signup(_currentState: unknown, formData: FormData) {
 
-  await addToApproval(formData.get("email") as string);
-
+ 
   const password = formData.get("password") as string
   const customerForm = {
     email: formData.get("email") as string,
@@ -63,16 +62,16 @@ export async function signup(_currentState: unknown, formData: FormData) {
     })
 
     const customHeaders = { authorization: `Bearer ${token}` }
-
+  
     const { customer: createdCustomer } = await sdk.store.customer.create(
       customerForm,
       {},
       customHeaders
     )
 
+    await sdk.client.setToken(token);
 
-    
-
+    await addToApproval(formData.get("email") as string);
 
     const companyForm = {
       name: formData.get("company_name") as string,
@@ -97,8 +96,6 @@ export async function signup(_currentState: unknown, formData: FormData) {
       console.log("error creating employee", err)
     })
 
-    
-
     revalidateTag(getCacheTag("customers"));
 
     return `Account created, please login.`;
@@ -120,9 +117,10 @@ async function addToApproval(email: string){
   try{
     const response = await fetch(`http://localhost:9000/store/customer/add-to-approval`,{
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+        'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
       },
       body: JSON.stringify({ "email": email }),
     });
@@ -142,9 +140,9 @@ export async function login(_currentState: unknown, formData: FormData) {
 
   const approved = await checkApproved(email);
 
-  if(approved == false){
-    return "Your account is not approved yet. Please check your email for approval."
-  }
+  // if(approved == false){
+  //   return "Your account is not approved yet. Please check your email for approval."
+  // }
 
   try {
     await sdk.auth
@@ -157,6 +155,9 @@ export async function login(_currentState: unknown, formData: FormData) {
           return "Wait for approval."
         }
       })
+
+      return 'Wait for approval.'
+
   } catch (error: any) {
     let errorMsg = error.toString();
 
@@ -172,6 +173,8 @@ export async function login(_currentState: unknown, formData: FormData) {
 
 async function checkApproved(email: string) {
 
+  try{
+
   const response = await fetch(`http://localhost:9000/store/customer/get-customer-approved?email=${email}`,{
     headers: {
       "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
@@ -180,6 +183,12 @@ async function checkApproved(email: string) {
   const data = await response.json();
 
   return data.customer_approved[0].approved;
+
+  }catch(err){
+    console.error("Something goes wrong:", err);
+    return false;
+  }
+
 }
 
 export async function signout(countryCode: string, customerId: string) {

@@ -42,6 +42,12 @@ export default defineMiddlewares({
         authenticate("user", ["session", "bearer", "api-key"])
       ],
     },
+    // {
+    //   matcher: "/store/customer/add-to-approval",
+    //   middlewares: [
+    //     authenticate("user", ["session", "bearer", "api-key"])
+    //   ],
+    // },
     {
       matcher: "/admin/product-documents/save-file",
       middlewares: [
