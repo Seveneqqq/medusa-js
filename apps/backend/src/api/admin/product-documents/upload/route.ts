@@ -13,10 +13,12 @@ export const POST = async (req: any, res: any) => {
     
         const { product_id, documents } = req.body;
 
+        console.log(product_id, documents);
+
         for (const doc of documents) {
 
             const checkFileQuery = `
-                SELECT file_id FROM file 
+                SELECT file_id FROM attachment 
                 WHERE file_name = $1 AND language = $2 AND document_type = $3
             `;
             const checkFileResult = await pool.query(checkFileQuery, [doc.file_name, doc.language, doc.document_type]);
@@ -27,7 +29,7 @@ export const POST = async (req: any, res: any) => {
                 file_id = checkFileResult.rows[0].file_id;
             } else {
                 const insertFileQuery = `
-                    INSERT INTO file (file_name, language, document_type, created_at) 
+                    INSERT INTO attachment (file_name, language, document_type, created_at) 
                     VALUES ($1, $2, $3, NOW())
                     RETURNING file_id
                 `;
@@ -36,7 +38,7 @@ export const POST = async (req: any, res: any) => {
             }
 
             const insertProductFileQuery = `
-                INSERT INTO product_file (product_id, file_id)
+                INSERT INTO product_attachment (product_id, file_id)
                 VALUES ($1, $2)
             `;
             await pool.query(insertProductFileQuery, [product_id, file_id]);

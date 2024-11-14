@@ -4,12 +4,12 @@ import { Skeleton } from "../common/skeleton";
 
 interface FileModalProps {
     onClose: () => void;
-    setSelectedFiles: (selectedFiles: { file_name: string; language: string; document_type: string; }[]) => void;
+    setSelectedFiles: (selectedFiles: { file_id: number | string; file_name: string; language: string; document_type: string; }[]) => void;
 }
 
 export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles }) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [rows, setRows] = useState<Array<{ id: number | string; file_name: string; language: string; document_type: string }>>([]);
+    const [rows, setRows] = useState<Array<{ id: number | string; file_id: number | string; file_name: string; language: string; document_type: string }>>([]);
     const [selectedRows, setSelectedRows] = useState<Record<number | string, boolean>>({});
     const [searchTerm, setSearchTerm] = useState("");
     const [languages, setLanguages] = useState<Language[]>([]);
@@ -40,7 +40,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
             });
             const dataFromResponse = await response.json();
             const data = dataFromResponse.attachments;
-            console.log(dataFromResponse);
+            console.log('Fetched data:', data); // Debugging log
 
             // Create a Set to remove duplicates
             const uniqueLanguages: any[] = Array.from(new Set(data.map(row => row.language)))
@@ -49,8 +49,8 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
             setLanguages(uniqueLanguages);
             setRows(data);
 
-            const initialSelectionState = data.reduce((acc: Record<number | string, boolean>, row: { id: number | string }) => {
-                acc[row.id] = false;
+            const initialSelectionState = data.reduce((acc: Record<number | string, boolean>, row: { file_id: number | string }) => {
+                acc[row.file_id] = false; // Use file_id instead of id for selection state
                 return acc;
             }, {});
             setSelectedRows(initialSelectionState);
@@ -61,20 +61,22 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
         }
     };
 
-    const toggleSelectRow = (id: number | string) => {
+    const toggleSelectRow = (file_id: number | string) => {
         setSelectedRows((prev) => ({
             ...prev,
-            [id]: !prev[id],
+            [file_id]: !prev[file_id],
         }));
     };
 
     const handleConfirm = () => {
-        const selectedFiles = rows.filter(row => selectedRows[row.id]).map(row => ({
+        const selectedFiles = rows.filter(row => selectedRows[row.file_id]).map(row => ({
+            file_id: row.file_id, // Use file_id instead of id
             file_name: row.file_name,
             language: row.language,
             document_type: row.document_type,
         }));
 
+        console.log('Selected files:', selectedFiles); // Debugging log
         setSelectedFiles(selectedFiles);
         let productId = getProductIdFromUrl();
         saveDataInDatabase(selectedFiles, productId);
@@ -89,12 +91,24 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
 
     const saveDataInDatabase = async (selectedFiles, productId) => {
         try {
+            const documents = selectedFiles.map(file => ({
+                file_id: file.file_id,
+                file_name: file.file_name,
+                language: file.language,
+                document_type: file.document_type
+            }));
+
+            console.log('Saving documents:', documents); // Debugging log
+
             const response = await fetch("http://localhost:9000/admin/product-documents/upload", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ product_id: productId, documents: selectedFiles }),
+                body: JSON.stringify({ 
+                    product_id: productId, 
+                    documents: documents 
+                }),
                 credentials: "include",
             });
 
@@ -161,7 +175,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
                                     <Select.Value placeholder="Select a language" />
                                 </Select.Trigger>
                                 <Select.Content>
-                                    <Select.Item key="clear" value="clear">Clear Selection</Select.Item> {/* Ensure unique key */}
+                                    <Select.Item key="clear" value="clear">Clear Selection</Select.Item>
                                     {languages.map((item) => (
                                         <Select.Item key={item.value} value={item.value}>
                                             {item.label}
@@ -212,12 +226,12 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
                             </Table.Header>
                             <Table.Body>
                                 {filteredRows.map((row) => (
-                                    <Table.Row key={row.id}>
+                                    <Table.Row key={row.file_id}>
                                         <Table.Cell>
                                             <Checkbox
-                                                onCheckedChange={() => toggleSelectRow(row.id)}
+                                                onCheckedChange={() => toggleSelectRow(row.file_id)}
                                                 aria-label={`Select ${row.file_name}`}
-                                                checked={!!selectedRows[row.id]}
+                                                checked={!!selectedRows[row.file_id]}
                                             />
                                         </Table.Cell>
                                         <Table.Cell>{row.file_name}</Table.Cell>
