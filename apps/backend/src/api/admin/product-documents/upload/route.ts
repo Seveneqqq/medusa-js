@@ -41,12 +41,12 @@ export const POST = async (
                         file_id = newAttachment.file_id;
                     }
 
-                    const existingProductAttachment = await documentModuleService.listProduct_attachments({
+                    const existingProduct_Attachment = await documentModuleService.listProduct_attachments({
                         product_id: product_id,
                         file_id: file_id
                     });
 
-                    if (existingProductAttachment && existingProductAttachment.length > 0) {
+                    if (existingProduct_Attachment && existingProduct_Attachment.length > 0) {
                         return {
                             success: true,
                             file_id: file_id,
