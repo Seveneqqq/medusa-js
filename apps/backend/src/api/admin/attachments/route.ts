@@ -6,34 +6,31 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteQueryFunction } from "@medusajs/framework/types";
 import DocumentModuleService from "src/modules/documents/service";
 
-export const POST = async(
+
+export const GET = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
-) =>{
-
+) => {
     try {
         
-        const { id } = req.body;
+        const query = req.scope.resolve<RemoteQueryFunction>(
+            ContainerRegistrationKeys.QUERY
+        );
 
         const documentModuleService = req.scope.resolve<DocumentModuleService>(
             "documentModuleService"
         );
 
-        const attachments = await documentModuleService.deleteProduct_attachments(
-            {
-                id
-            }
-        );
+        const attachments = await documentModuleService.listAttachments();
 
-        console.log(attachments);
-
-
+        res.status(200).json({
+            attachments
+        });
+        
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: "An error occurred while processing the request.",
-            error: error
+        console.error("Error fetching attachments:", error);
+        res.status(500).json({ 
+            message: error instanceof Error ? error.message : "An unknown error occurred" 
         });
     }
-
-}
+};

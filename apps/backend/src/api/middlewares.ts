@@ -19,6 +19,36 @@ export default defineMiddlewares({
       ],
     },
     {
+      matcher: "/admin/attachments",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"])
+      ],
+    },
+    {
+      matcher: "/admin/attachments/[id]",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"])
+      ],
+    },
+    {
+      matcher: "/admin/attachments/[id]/delete",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"])
+      ],
+    },
+    {
+      matcher: "/admin/attachments/[id]/upload",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"])
+      ],
+    },
+    {
+      matcher: "/admin/attachments/[id]/save-file",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"])
+      ],
+    },
+    {
       matcher: "/admin/customers/activate",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
