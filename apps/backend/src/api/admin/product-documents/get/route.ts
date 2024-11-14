@@ -10,7 +10,6 @@ import { RemoteQueryFunction } from "@medusajs/framework/types";
 import DocumentModuleService from "src/modules/documents/service";
 
 
-
 export const GET = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
@@ -25,7 +24,6 @@ export const GET = async (
             "documentModuleService"
         );
 
-        // Get product attachments
         const [product_attachments] = await documentModuleService.listAndCountProduct_attachments(
             {
                 product_id: product_id,
@@ -35,7 +33,6 @@ export const GET = async (
             }
         );
 
-        // Use Promise.all to wait for all attachment queries
         const attachmentsArrays = await Promise.all(
             product_attachments.map(async (doc: any) => {
                 const attachment = await documentModuleService.listAttachments(
@@ -46,12 +43,10 @@ export const GET = async (
                         select: ["*"],
                     }
                 );
-                // Return first element if exists, otherwise empty array
                 return attachment[0] || [];
             })
         );
 
-        // Flatten the array and filter out empty arrays
         const attachments = attachmentsArrays.flat().filter(attachment => Object.keys(attachment).length > 0);
 
         res.status(200).json({
