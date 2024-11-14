@@ -2,8 +2,7 @@ import type {
     AuthenticatedMedusaRequest,
     MedusaResponse,
 } from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { RemoteQueryFunction } from "@medusajs/framework/types";
+import { bodySchema } from './validators'
 import DocumentModuleService from "src/modules/documents/service";
 
 export const POST = async (
