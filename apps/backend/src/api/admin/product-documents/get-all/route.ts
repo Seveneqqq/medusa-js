@@ -21,9 +21,7 @@ export const GET = async (
             "documentModuleService"
         );
 
-        const attachments = await documentModuleService.listAttachments({
-            select: ['*'],
-        });
+        const attachments = await documentModuleService.listAttachments();
 
         res.status(200).json({
             attachments

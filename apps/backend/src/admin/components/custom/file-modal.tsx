@@ -38,7 +38,9 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
                 },
                 credentials: "include",
             });
-            const data = await response.json();
+            const dataFromResponse = await response.json();
+            const data = dataFromResponse.attachments;
+            console.log(dataFromResponse);
 
             // Create a Set to remove duplicates
             const uniqueLanguages: any[] = Array.from(new Set(data.map(row => row.language)))
