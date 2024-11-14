@@ -4,7 +4,7 @@
       <h3>Moduł dokumentów</h3>
       <ul>
         <li>Dodawanie i usuwanie plików dla wybranego produktu z podziałem na języki i rodzaje dokumentów</li>
-        <li>Dialog do przeglądania wszystkich plików które są już zapisane, umożliwia szybkie przypisanie całego kompletu dokumentów do produktu</li>
+        <li>Dialog do przeglądania wszystkich plików które są już zapisane, umożliwia szybkie przypisanie całego kompletu dokumentów do innego produktu</li>
         <li>Zapisywanie plików lokalnie w folderze /backend/uploads</li>
         <li>Zapisywanie do bazy PostgreSQL</li>
       </ul>
