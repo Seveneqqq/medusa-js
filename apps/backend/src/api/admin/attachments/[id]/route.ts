@@ -6,7 +6,6 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteQueryFunction } from "@medusajs/framework/types";
 import DocumentModuleService from "src/modules/documents/service";
 
-
 export const GET = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
@@ -16,7 +15,8 @@ export const GET = async (
             ContainerRegistrationKeys.QUERY
         );
 
-        const product_id = req.query.product_id;
+        const product_id = req.params.id;
+
         const documentModuleService = req.scope.resolve<DocumentModuleService>(
             "documentModuleService"
         );
