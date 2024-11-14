@@ -14,6 +14,39 @@ const generateFileId = (fileName: string): number => {
     return parseInt(combinedId.slice(-9));
 };
 
+export const DELETE = async(
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) =>{
+
+    try {
+        
+        const { id } = req.body;
+
+        const documentModuleService = req.scope.resolve<DocumentModuleService>(
+            "documentModuleService"
+        );
+
+        const attachments = await documentModuleService.deleteProduct_attachments(
+            {
+                id
+            }
+        );
+
+        console.log(attachments);
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "An error occurred while processing the request.",
+            error: error
+        });
+    }
+
+}
+
+
 export const POST = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
