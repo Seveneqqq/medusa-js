@@ -1,57 +1,124 @@
-import { Pool } from "pg";
-import dotenv from 'dotenv';
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import DocumentModuleService from "src/modules/documents/service";
 
-dotenv.config();
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, 
-});
-
-
-export const POST = async (req: any, res: any) => {
+export const POST = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) => {
     try {
-    
-        const { product_id, documents } = req.body;
+        const { product_id, documents } : any = req.body;
 
-        console.log(product_id, documents);
+        const documentModuleService = req.scope.resolve<DocumentModuleService>(
+            "documentModuleService"
+        );
 
-        for (const doc of documents) {
+        const results = await Promise.all(
+            documents.map(async (doc) => {
+                try {
 
-            const checkFileQuery = `
-                SELECT file_id FROM attachment 
-                WHERE file_name = $1 AND language = $2 AND document_type = $3
-            `;
-            const checkFileResult = await pool.query(checkFileQuery, [doc.file_name, doc.language, doc.document_type]);
+                    const existingFiles = await documentModuleService.listAttachments({
+                        file_name: doc.file_name,
+                        language: doc.language,
+                        document_type: doc.document_type
+                    });
 
-            let file_id;
+                    let file_id;
 
-            if (checkFileResult.rows.length > 0) {
-                file_id = checkFileResult.rows[0].file_id;
-            } else {
-                const insertFileQuery = `
-                    INSERT INTO attachment (file_name, language, document_type, created_at) 
-                    VALUES ($1, $2, $3, NOW())
-                    RETURNING file_id
-                `;
-                const insertFileResult = await pool.query(insertFileQuery, [doc.file_name, doc.language, doc.document_type]);
-                file_id = insertFileResult.rows[0].file_id;
-            }
+                    if (existingFiles && existingFiles.length > 0) {
+                        file_id = existingFiles[0].file_id;
+                    } else {
 
-            const insertProductFileQuery = `
-                INSERT INTO product_attachment (product_id, file_id)
-                VALUES ($1, $2)
-            `;
-            await pool.query(insertProductFileQuery, [product_id, file_id]);
+                        const newAttachment = await documentModuleService.createAttachments({
+                            file_name: doc.file_name,
+                            language: doc.language,
+                            document_type: doc.document_type,
+                            created_at: new Date()
+                        });
+                        file_id = newAttachment.file_id;
+                    }
+
+                    const existingProductAttachment = await documentModuleService.listProduct_attachments({
+                        product_id: product_id,
+                        file_id: file_id
+                    });
+
+                    if (existingProductAttachment && existingProductAttachment.length > 0) {
+                        return {
+                            success: true,
+                            file_id: file_id,
+                            file_name: doc.file_name,
+                            skipped: true,
+                            message: 'Document already attached to product'
+                        };
+                    }
+
+                    await documentModuleService.createProduct_attachments({
+                        product_id: product_id,
+                        file_id: file_id
+                    });
+
+                    return {
+                        success: true,
+                        file_id: file_id,
+                        file_name: doc.file_name,
+                        skipped: false,
+                        message: 'Document attached successfully'
+                    };
+                } catch (error) {
+                    console.error(`Error processing document ${doc.file_name}:`, error);
+                    return {
+                        success: false,
+                        file_name: doc.file_name,
+                        error: error.message,
+                        skipped: false
+                    };
+                }
+            })
+        );
+
+        const processed = results.filter(r => r.success && !r.skipped).length;
+        const skipped = results.filter(r => r.skipped).length;
+        const failed = results.filter(r => !r.success).length;
+
+        const hasErrors = results.some(result => !result.success);
+
+        if (hasErrors) {
+            const failedDocs = results
+                .filter(result => !result.success)
+                .map(result => result.file_name);
+
+            res.status(207).json({
+                message: 'Some documents failed to process',
+                summary: {
+                    processed,
+                    skipped,
+                    failed
+                },
+                results: results,
+                failedDocuments: failedDocs
+            });
+        } else {
+            res.status(200).json({
+                message: 'All documents processed successfully',
+                summary: {
+                    processed,
+                    skipped,
+                    failed
+                },
+                results: results
+            });
         }
 
-        res.status(200).json({
-            message: 'Documents processed successfully.',
-        });
     } catch (error) {
-        console.error('Error processing request:', error);
+        console.error('Error in document processing:', error);
         res.status(500).json({
-            message: 'An error occurred while processing the request.',
-            error: error.message, 
+            message: 'An error occurred while processing the documents',
+            error: error.message
         });
     }
 };
