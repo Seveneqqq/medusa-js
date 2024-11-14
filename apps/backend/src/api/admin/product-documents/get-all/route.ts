@@ -1,21 +1,37 @@
-import { Pool } from "pg";
-import dotenv from 'dotenv';
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import DocumentModuleService from "src/modules/documents/service";
 
-dotenv.config();
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, 
-});
-
-
-export const GET = async (req: any, res: any) => {
-    
+export const GET = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) => {
     try {
-        let sql = `SELECT DISTINCT file_id as id, file_name, language, document_type FROM file;`;
-        let result = await pool.query(sql);
-        res.status(200).json(result.rows);
+        
+        const query = req.scope.resolve<RemoteQueryFunction>(
+            ContainerRegistrationKeys.QUERY
+        );
+
+        const documentModuleService = req.scope.resolve<DocumentModuleService>(
+            "documentModuleService"
+        );
+
+        const attachments = await documentModuleService.listAttachments({
+            select: ['*'],
+        });
+
+        res.status(200).json({
+            attachments
+        });
     } catch (error) {
-        res.status(500).json({error: error.message})
+        console.error("Error fetching attachments:", error);
+        res.status(500).json({ 
+            message: error instanceof Error ? error.message : "An unknown error occurred" 
+        });
     }
-    
 };

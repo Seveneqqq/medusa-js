@@ -3,9 +3,6 @@ import type {
     MedusaResponse,
 } from "@medusajs/framework";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { AdminCreateDocumentType } from "./validators";
-import { documentQueryConfig } from "./query-config";
-import { DOCUMENT_MODULE } from 'src/modules/documents';
 import { RemoteQueryFunction } from "@medusajs/framework/types";
 import DocumentModuleService from "src/modules/documents/service";
 
