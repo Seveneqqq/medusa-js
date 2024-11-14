@@ -2,8 +2,21 @@ import type {
     AuthenticatedMedusaRequest,
     MedusaResponse,
 } from "@medusajs/framework";
-// import { bodySchema } from './validators'
 import DocumentModuleService from "src/modules/documents/service";
+
+// Funkcja pomocnicza do generowania file_id
+const generateFileId = (fileName: string): number => {
+    const timestamp = Date.now();
+    const cleanFileName = fileName.replace(/[^a-zA-Z0-9]/g, ''); // usuń znaki specjalne
+    const nameHash = cleanFileName
+        .split('')
+        .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    
+    // Łączymy timestamp z hash'em nazwy pliku i bierzemy ostatnie 9 cyfr
+    // aby zmieścić się w zakresie integer w bazie danych
+    const combinedId = `${timestamp}${nameHash}`;
+    return parseInt(combinedId.slice(-9));
+};
 
 export const POST = async (
     req: AuthenticatedMedusaRequest,
@@ -12,7 +25,7 @@ export const POST = async (
     try {
         const { product_id, attachments } : any = req.body;
 
-        console.log(product_id, attachments);
+        console.log("Processing attachments:", product_id, attachments);
 
         const documentModuleService = req.scope.resolve<DocumentModuleService>(
             "documentModuleService"
@@ -21,61 +34,37 @@ export const POST = async (
         const results = await Promise.all(
             attachments.map(async (doc) => {
                 try {
+                    // Generowanie unikatowego file_id
+                    const generatedFileId = generateFileId(doc.file_name);
 
-                    const existingAttachments = await documentModuleService.listAttachments({
+                    // Tworzenie nowego attachment z wygenerowanym file_id
+                    const newAttachment = await documentModuleService.createAttachments({
+                        file_id: generatedFileId,
                         file_name: doc.file_name,
                         language: doc.language,
-                        document_type: doc.document_type
+                        document_type: doc.document_type,
+                        created_at: new Date()
                     });
 
-                    let file_id;
-
-                    if (existingAttachments && existingAttachments.length > 0) {
-                        file_id = existingAttachments[0].file_id;
-                    } else {
-
-                        const newAttachment = await documentModuleService.createAttachments({
-                            file_name: doc.file_name,
-                            language: doc.language,
-                            document_type: doc.document_type,
-                            created_at: new Date()
-                        });
-                        file_id = newAttachment.file_id;
-                    }
-
-                    const existingProduct_Attachment = await documentModuleService.listProduct_attachments({
-                        product_id: product_id,
-                        file_id: file_id
-                    });
-
-                    if (existingProduct_Attachment && existingProduct_Attachment.length > 0) {
-                        return {
-                            success: true,
-                            file_id: file_id,
-                            file_name: doc.file_name,
-                            skipped: true,
-                            message: 'Attachment already attached to product'
-                        };
-                    }
-
+                    // Tworzenie powiązania z produktem
                     await documentModuleService.createProduct_attachments({
                         product_id: product_id,
-                        file_id: file_id
+                        file_id: newAttachment.file_id
                     });
 
                     return {
                         success: true,
-                        file_id: file_id,
+                        file_id: newAttachment.file_id,
                         file_name: doc.file_name,
                         skipped: false,
-                        message: 'Attachment attached successfully'
+                        message: 'Attachment created and linked successfully'
                     };
                 } catch (error) {
                     console.error(`Error processing document ${doc.file_name}:`, error);
                     return {
                         success: false,
                         file_name: doc.file_name,
-                        error: error.message,
+                        error: error instanceof Error ? error.message : String(error),
                         skipped: false
                     };
                 }
@@ -83,7 +72,6 @@ export const POST = async (
         );
 
         const processed = results.filter(r => r.success && !r.skipped).length;
-        const skipped = results.filter(r => r.skipped).length;
         const failed = results.filter(r => !r.success).length;
 
         const hasErrors = results.some(result => !result.success);
@@ -93,33 +81,31 @@ export const POST = async (
                 .filter(result => !result.success)
                 .map(result => result.file_name);
 
-            res.status(207).json({
+            return res.status(207).json({
                 message: 'Some attachments failed to process',
                 summary: {
                     processed,
-                    skipped,
                     failed
                 },
                 results: results,
                 failedAttachments: failedDocs
             });
-        } else {
-            res.status(200).json({
-                message: 'All attachments processed successfully',
-                summary: {
-                    processed,
-                    skipped,
-                    failed
-                },
-                results: results
-            });
         }
+
+        return res.status(200).json({
+            message: 'All attachments processed successfully',
+            summary: {
+                processed,
+                failed
+            },
+            results: results
+        });
 
     } catch (error) {
         console.error('Error in document processing:', error);
-        res.status(500).json({
+        return res.status(500).json({
             message: 'An error occurred while processing the attachments',
-            error: error.message
+            error: error instanceof Error ? error.message : String(error)
         });
     }
 };

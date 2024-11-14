@@ -145,8 +145,10 @@ const ProductWidget = () => {
             formData.append('files', file); 
         });
     
+        const productId = await getProductIdFromUrl();
+
         try {
-            const response = await fetch('http://localhost:9000/admin/product-documents/save-file', {
+            const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/save-file`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include', 
@@ -174,14 +176,19 @@ const ProductWidget = () => {
                 })),
             };
 
+            const productId = await getProductIdFromUrl();
+
             try {
-                const response = await fetch('http://localhost:9000/admin/product-documents/upload', {
+                const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     credentials: 'include', 
-                    body: JSON.stringify(dataToSend),
+                    body: JSON.stringify({
+                        attachments: dataToSend.documents,
+                        product_id: productId
+                    })
                 });
 
                 if (response.ok) {
