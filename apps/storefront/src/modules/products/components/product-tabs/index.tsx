@@ -168,6 +168,9 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
               <Table.Cell className="text-center">
                 No documents available.
               </Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
             </Table.Row>
           )}
         </Table.Body>
