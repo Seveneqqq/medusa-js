@@ -35,5 +35,4 @@ export const POST = async(
             error: error
         });
     }
-
 }

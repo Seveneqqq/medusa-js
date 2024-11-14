@@ -61,9 +61,11 @@ const ProductWidget = () => {
     const dropFileFromDB = async (index: number) => {
         try {
             let file_name = relatedFiles[index].file_name;
-            let id = await getProductIdFromUrl();
+            let productId = await getProductIdFromUrl();
 
-            let response = await fetch('http://localhost:9000/admin/product-documents/delete', {
+            let id = relatedFiles[index].file_id;
+
+            let response = await fetch(`http://localhost:9000/admin/attachments/${productId}/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
