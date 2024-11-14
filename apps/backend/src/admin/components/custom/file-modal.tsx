@@ -31,7 +31,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
 
     const fetchData = async () => {
         try {
-            const response = await fetch("http://localhost:9000/admin/product-documents/get-all", {
+            const response = await fetch("http://localhost:9000/admin/attachments", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,14 +100,14 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
 
             console.log('Saving documents:', documents); // Debugging log
 
-            const response = await fetch("http://localhost:9000/admin/product-documents/upload", {
+            const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/upload`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ 
                     product_id: productId, 
-                    documents: documents 
+                    attachments: documents 
                 }),
                 credentials: "include",
             });

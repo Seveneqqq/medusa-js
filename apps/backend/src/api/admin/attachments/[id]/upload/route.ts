@@ -10,14 +10,16 @@ export const POST = async (
     res: MedusaResponse
 ) => {
     try {
-        const { product_id, Attachments } : any = req.body;
+        const { product_id, attachments } : any = req.body;
+
+        console.log(product_id, attachments);
 
         const documentModuleService = req.scope.resolve<DocumentModuleService>(
             "documentModuleService"
         );
 
         const results = await Promise.all(
-            Attachments.map(async (doc) => {
+            attachments.map(async (doc) => {
                 try {
 
                     const existingAttachments = await documentModuleService.listAttachments({
@@ -92,7 +94,7 @@ export const POST = async (
                 .map(result => result.file_name);
 
             res.status(207).json({
-                message: 'Some Attachments failed to process',
+                message: 'Some attachments failed to process',
                 summary: {
                     processed,
                     skipped,
@@ -103,7 +105,7 @@ export const POST = async (
             });
         } else {
             res.status(200).json({
-                message: 'All Attachments processed successfully',
+                message: 'All attachments processed successfully',
                 summary: {
                     processed,
                     skipped,
@@ -116,7 +118,7 @@ export const POST = async (
     } catch (error) {
         console.error('Error in document processing:', error);
         res.status(500).json({
-            message: 'An error occurred while processing the Attachments',
+            message: 'An error occurred while processing the attachments',
             error: error.message
         });
     }
