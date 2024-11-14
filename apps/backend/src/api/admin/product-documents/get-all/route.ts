@@ -26,6 +26,7 @@ export const GET = async (
         res.status(200).json({
             attachments
         });
+        
     } catch (error) {
         console.error("Error fetching attachments:", error);
         res.status(500).json({ 

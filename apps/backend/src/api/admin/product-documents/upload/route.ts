@@ -10,17 +10,17 @@ export const POST = async (
     res: MedusaResponse
 ) => {
     try {
-        const { product_id, documents } : any = req.body;
+        const { product_id, Attachments } : any = req.body;
 
         const documentModuleService = req.scope.resolve<DocumentModuleService>(
             "documentModuleService"
         );
 
         const results = await Promise.all(
-            documents.map(async (doc) => {
+            Attachments.map(async (doc) => {
                 try {
 
-                    const existingFiles = await documentModuleService.listAttachments({
+                    const existingAttachments = await documentModuleService.listAttachments({
                         file_name: doc.file_name,
                         language: doc.language,
                         document_type: doc.document_type
@@ -28,8 +28,8 @@ export const POST = async (
 
                     let file_id;
 
-                    if (existingFiles && existingFiles.length > 0) {
-                        file_id = existingFiles[0].file_id;
+                    if (existingAttachments && existingAttachments.length > 0) {
+                        file_id = existingAttachments[0].file_id;
                     } else {
 
                         const newAttachment = await documentModuleService.createAttachments({
@@ -52,7 +52,7 @@ export const POST = async (
                             file_id: file_id,
                             file_name: doc.file_name,
                             skipped: true,
-                            message: 'Document already attached to product'
+                            message: 'Attachment already attached to product'
                         };
                     }
 
@@ -66,7 +66,7 @@ export const POST = async (
                         file_id: file_id,
                         file_name: doc.file_name,
                         skipped: false,
-                        message: 'Document attached successfully'
+                        message: 'Attachment attached successfully'
                     };
                 } catch (error) {
                     console.error(`Error processing document ${doc.file_name}:`, error);
@@ -92,18 +92,18 @@ export const POST = async (
                 .map(result => result.file_name);
 
             res.status(207).json({
-                message: 'Some documents failed to process',
+                message: 'Some Attachments failed to process',
                 summary: {
                     processed,
                     skipped,
                     failed
                 },
                 results: results,
-                failedDocuments: failedDocs
+                failedAttachments: failedDocs
             });
         } else {
             res.status(200).json({
-                message: 'All documents processed successfully',
+                message: 'All Attachments processed successfully',
                 summary: {
                     processed,
                     skipped,
@@ -116,7 +116,7 @@ export const POST = async (
     } catch (error) {
         console.error('Error in document processing:', error);
         res.status(500).json({
-            message: 'An error occurred while processing the documents',
+            message: 'An error occurred while processing the Attachments',
             error: error.message
         });
     }
