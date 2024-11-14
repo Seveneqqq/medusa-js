@@ -4,16 +4,12 @@ import type {
 } from "@medusajs/framework";
 import DocumentModuleService from "src/modules/documents/service";
 
-// Funkcja pomocnicza do generowania file_id
 const generateFileId = (fileName: string): number => {
     const timestamp = Date.now();
-    const cleanFileName = fileName.replace(/[^a-zA-Z0-9]/g, ''); // usuń znaki specjalne
+    const cleanFileName = fileName.replace(/[^a-zA-Z0-9]/g, '');
     const nameHash = cleanFileName
         .split('')
         .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    
-    // Łączymy timestamp z hash'em nazwy pliku i bierzemy ostatnie 9 cyfr
-    // aby zmieścić się w zakresie integer w bazie danych
     const combinedId = `${timestamp}${nameHash}`;
     return parseInt(combinedId.slice(-9));
 };
@@ -34,10 +30,9 @@ export const POST = async (
         const results = await Promise.all(
             attachments.map(async (doc) => {
                 try {
-                    // Generowanie unikatowego file_id
+                    
                     const generatedFileId = generateFileId(doc.file_name);
 
-                    // Tworzenie nowego attachment z wygenerowanym file_id
                     const newAttachment = await documentModuleService.createAttachments({
                         file_id: generatedFileId,
                         file_name: doc.file_name,
@@ -46,7 +41,6 @@ export const POST = async (
                         created_at: new Date()
                     });
 
-                    // Tworzenie powiązania z produktem
                     await documentModuleService.createProduct_attachments({
                         product_id: product_id,
                         file_id: newAttachment.file_id
