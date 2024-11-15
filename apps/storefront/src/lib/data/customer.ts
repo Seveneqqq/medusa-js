@@ -115,7 +115,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
 async function addToApproval(email: string){
 
   try{
-    const response = await fetch(`http://localhost:9000/store/customer/add-to-approval`,{
+    const response = await fetch(`http://localhost:9000/store/customer/${email}/add-to-approval`,{
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -175,7 +175,7 @@ async function checkApproved(email: string) {
 
   try{
 
-  const response = await fetch(`http://localhost:9000/store/customer/get-customer-approved?email=${email}`,{
+  const response = await fetch(`http://localhost:9000/store/customer?email=${email}`,{
     headers: {
       "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
     }
