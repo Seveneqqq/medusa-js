@@ -89,7 +89,6 @@ export default defineMiddlewares({
         authenticate("user", ["session", "bearer", "api-key"])
       ],
     },
-    // Store customer route
     {
       matcher: "/store/customers/me",
       middlewares: [
