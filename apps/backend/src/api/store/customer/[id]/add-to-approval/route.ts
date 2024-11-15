@@ -5,7 +5,7 @@ import type {
     MedusaResponse,
 } from "@medusajs/framework"
 
-import {createApprovalWorkflow} from "../../../../workflows/customer"
+import {createApprovalWorkflow} from "../../../../../workflows/customer"
 
 dotenv.config()
 
