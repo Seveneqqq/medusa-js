@@ -21,7 +21,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
       component: <ProductSpecificationsTab product={product} />,
     },
     {
-      label: "Documents",
+      label: "Attachments",
       component: <ProductDocumentsTab product={product} />,
     },
   ];
