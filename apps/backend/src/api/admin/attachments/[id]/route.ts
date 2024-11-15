@@ -19,13 +19,7 @@ export const DELETE = async(
             "documentModuleService"
         );
 
-        console.log(id);
-        console.log(typeof id )
-
-
-        const attachments = await documentModuleService.deleteProduct_attachments(`${id}`);
-
-        console.log(await attachments);
+        const attachments = await documentModuleService.deleteProduct_attachments(id);
 
         res.status(200).json({Succes:attachments});
 
