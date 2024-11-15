@@ -19,8 +19,9 @@
     <li>
       <h3>Migracje bazy danych</h3>
       <ul>
-        <li>Dodanie tabeli PRODUCT_FILE i FILE</li>
-        <li>Dodanie kolumny approved do tabeli CUSTOMERS</li>
+        <li>Dodanie tabeli PRODUCT_ATTACHMENT I ATTACHMENT</li>
+        <li>Dodanie tabeli CUSTOMER_APPROVED</li>
+        <li>Utworzenie plików migracyjnych</li>
       </ul>
     </li>
   </ol>
