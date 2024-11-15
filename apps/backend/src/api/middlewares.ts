@@ -11,7 +11,6 @@ export default defineMiddlewares({
   routes: [
     ...adminMiddlewares,
     ...storeMiddlewares,
-    // Admin routes with authentication
     {
       matcher: "/admin/product-documents/get-all",
       middlewares: [
