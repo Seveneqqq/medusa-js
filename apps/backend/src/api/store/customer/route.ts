@@ -7,8 +7,6 @@ import type {
     MedusaResponse,
 } from "@medusajs/framework";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { AdminCreateApprovedType } from "./validators";
-import { approvedQueryConfig } from "./query-config";
 import { CUSTOMER_APPROVED_MODULE } from 'src/modules/customer-approved';
 import { RemoteQueryFunction } from "@medusajs/framework/types";
 import CustomerApprovedModuleService from "src/modules/customer-approved/service";
