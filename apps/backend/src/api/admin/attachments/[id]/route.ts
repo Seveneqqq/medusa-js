@@ -19,13 +19,15 @@ export const DELETE = async(
             "documentModuleService"
         );
 
-        const attachments = await documentModuleService.deleteProduct_attachments(
-            {
-                id
-            }
-        );
+        console.log(id);
+        console.log(typeof id )
 
-        console.log(attachments);
+
+        const attachments = await documentModuleService.deleteProduct_attachments(`${id}`);
+
+        console.log(await attachments);
+
+        res.status(200).json({Succes:attachments});
 
 
     } catch (error) {
@@ -62,6 +64,8 @@ export const GET = async (
             }
         );
 
+        const productAttachments = product_attachments;
+
         const attachmentsArrays = await Promise.all(
             product_attachments.map(async (doc: any) => {
                 const attachment = await documentModuleService.listAttachments(
@@ -79,7 +83,7 @@ export const GET = async (
         const attachments = attachmentsArrays.flat().filter(attachment => Object.keys(attachment).length > 0);
 
         res.status(200).json({
-            attachments
+            attachments, productAttachments
         });
     } catch (error) {
         console.error("Error fetching attachments:", error);

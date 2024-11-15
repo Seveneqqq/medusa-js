@@ -8,6 +8,7 @@ import { FocusModal } from "@medusajs/ui";
 const ProductWidget = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [language, setLanguage] = useState<string>("");
+    const [productAttachments, setProductAttachments] = useState<any>([]);
     const [documentType, setDocumentType] = useState<string>("");
     const [uploadedFiles, setUploadedFiles] = useState<Array<{ fileName: string, language: string, documentType: string }>>([]);
     const [relatedFiles, setRelatedFiles] = useState<Array<{
@@ -63,9 +64,11 @@ const ProductWidget = () => {
             let file_name = relatedFiles[index].file_name;
             let productId = await getProductIdFromUrl();
 
-            let id = relatedFiles[index].file_id;
+            let file_id = relatedFiles[index].file_id;
 
-            let response = await fetch(`http://localhost:9000/admin/attachments/${productId}/delete`, {
+            let id = productAttachments[index].id;
+
+            let response = await fetch(`http://localhost:9000/admin/attachments/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +76,6 @@ const ProductWidget = () => {
                 credentials: 'include',
                 body: JSON.stringify({
                     id: id,
-                    file_name: file_name,
                 }),
             });
 
@@ -108,6 +110,7 @@ const ProductWidget = () => {
 
             const result = await response.json();
             setRelatedFiles(result.attachments);
+            setProductAttachments(result.productAttachments);
             console.log(result);
             console.log('Updated');
         } catch (error) {
