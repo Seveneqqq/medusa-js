@@ -24,7 +24,6 @@ export const POST = async (
             "customerApprovedModuleService"
          );
 
-
          emails.forEach(async (email) => {
             const customer = await customerApprovedModuleService.updateCustomerApproveds({
                 email,

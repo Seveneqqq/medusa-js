@@ -11,7 +11,6 @@ export default defineMiddlewares({
   routes: [
     ...adminMiddlewares,
     ...storeMiddlewares,
-    // Admin routes with authentication
     {
       matcher: "/admin/product-documents/get-all",
       middlewares: [
@@ -90,7 +89,6 @@ export default defineMiddlewares({
         authenticate("user", ["session", "bearer", "api-key"])
       ],
     },
-    // Store customer route
     {
       matcher: "/store/customers/me",
       middlewares: [

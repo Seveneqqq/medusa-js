@@ -14,7 +14,7 @@ export const AdminListAttachmentsParams = z.object({
 });
 
 export const AdminGetAttachmentParams = z.object({
-    id: z.string(),
+    id: z.string().optional(),
     fields: z.string().optional(),
 });
 
@@ -23,22 +23,22 @@ export const AdminUploadAttachmentBody = z.object({
 });
 
 export const AdminCreateAttachment = z.object({
-    product_id: z.string(),
+    product_id: z.string().optional(),
     attachments: z.array(z.object({
-        file_name: z.string(),
-        language: z.string(),
-        document_type: z.enum(DOCUMENT_TYPES),
+        file_name: z.string().optional(),
+        language: z.string().optional(),
+        document_type: z.enum(DOCUMENT_TYPES).optional(),
     })),
 });
 
 export const AdminDeleteAttachment = z.object({
-    id: z.union([z.string(), z.number()]),
+    id: z.union([z.string(), z.number()]).optional(),
 });
 
 export const AdminSaveAttachmentFile = z.object({
-    file_name: z.string(),
-    language: z.string(),
-    document_type: z.enum(DOCUMENT_TYPES),
+    file_name: z.string().optional(),
+    language: z.string().optional(),
+    document_type: z.enum(DOCUMENT_TYPES).optional(),
 });
 
 export type AdminListAttachmentsParamsType = z.infer<typeof AdminListAttachmentsParams>;
