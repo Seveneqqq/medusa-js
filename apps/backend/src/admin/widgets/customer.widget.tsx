@@ -29,7 +29,7 @@ const CustomerWidget = () => {
     try {
         setIsLoading(true);
         const response = await fetch(
-            `http://localhost:9000/admin/customers/get-customers?page=${page}&limit=20`,
+            `http://localhost:9000/admin/customer?page=${page}&limit=20`,
             {
                 method: "GET",
                 headers: {
@@ -77,7 +77,7 @@ const CustomerWidget = () => {
 
     try {
         setIsLoading(true);
-        const response = await fetch("http://localhost:9000/admin/customers/activate", {
+        const response = await fetch(`http://localhost:9000/admin/customer/${selectedCustomers[0]}/activate`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -127,7 +127,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
         });
 
         const data = await response.json();
-        setDocuments(data); 
+        setDocuments(data.attachments); 
       } catch (error) {
         console.error("Error fetching documents:", error);
       } finally {
@@ -145,6 +145,12 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
   return (
     <div className="text-small-regular py-8">
       <Table className="rounded-lg shadow-borders-base overflow-hidden border-none">
+        <Table.Header>
+          <Table.Cell className="border-r text-center">File Name</Table.Cell>
+          <Table.Cell className="border-r text-center">Language</Table.Cell>
+          <Table.Cell className="border-r text-center">Document Type</Table.Cell>
+          <Table.Cell className="px-4 text-center">Download</Table.Cell>
+        </Table.Header>
         <Table.Body>
           {documents.length > 0 ? (
             documents.map((doc) => (
@@ -162,6 +168,9 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
               <Table.Cell className="text-center">
                 No documents available.
               </Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
+              <Table.Cell className="text-center"></Table.Cell>
             </Table.Row>
           )}
         </Table.Body>

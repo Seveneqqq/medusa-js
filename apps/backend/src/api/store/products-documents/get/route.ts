@@ -1,37 +1,68 @@
-import { Pool } from "pg";
-import dotenv from 'dotenv';
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import DocumentModuleService from "src/modules/documents/service";
 import cors from 'cors';
-
-dotenv.config();
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
 
 const corsOptions = {
     origin: process.env.STORE_CORS,
     credentials: false,
 };
 
-export const GET = async (req: any, res: any) => {
-
-    
+export const GET = async (
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) => {
     cors(corsOptions)(req, res, async () => {
+    
         try {
-            const productId = req.query.product_id; 
-
-            const sql = `
-                SELECT f.file_id, f.file_name, f.language, f.document_type, f.created_at
-                FROM product_file pf
-                JOIN file f ON pf.file_id = f.file_id
-                WHERE pf.product_id = $1
-            `;
-            const result = await pool.query(sql, [productId]);
-
-            res.status(200).json(result.rows); 
+            const query = req.scope.resolve<RemoteQueryFunction>(
+                ContainerRegistrationKeys.QUERY
+            );
+    
+            const product_id = req.query.product_id;
+            const documentModuleService = req.scope.resolve<DocumentModuleService>(
+                "documentModuleService"
+            );
+    
+            const [product_attachments] = await documentModuleService.listAndCountProduct_attachments(
+                {
+                    product_id: product_id,
+                },
+                {
+                    select: ["*"],
+                }
+            );
+    
+            const attachmentsArrays = await Promise.all(
+                product_attachments.map(async (doc: any) => {
+                    const attachment = await documentModuleService.listAttachments(
+                        {
+                            file_id: doc.file_id,
+                        },
+                        {
+                            select: ["*"],
+                        }
+                    );
+                    return attachment[0] || [];
+                })
+            );
+    
+            const attachments = attachmentsArrays.flat().filter(attachment => Object.keys(attachment).length > 0);
+    
+            res.status(200).json({
+                attachments
+            });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            console.error("Error fetching attachments:", error);
+            res.status(500).json({ 
+                message: error instanceof Error ? error.message : "An unknown error occurred" 
+            });
         }
+
     });
 };
 

@@ -8,9 +8,19 @@ import { FocusModal } from "@medusajs/ui";
 const ProductWidget = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [language, setLanguage] = useState<string>("");
+    const [productAttachments, setProductAttachments] = useState<any>([]);
     const [documentType, setDocumentType] = useState<string>("");
     const [uploadedFiles, setUploadedFiles] = useState<Array<{ fileName: string, language: string, documentType: string }>>([]);
-    const [relatedFiles, setRelatedFiles] = useState<Array<{ id:number | string, file_name: string, language: string, document_type: string }>>([]);
+    const [relatedFiles, setRelatedFiles] = useState<Array<{
+        id: number,
+        file_id: number,
+        file_name: string,
+        language: string,
+        document_type: string,
+        created_at: string,
+        updated_at: string,
+        deleted_at: null | string
+    }>>([]);
     const [selectedFiles, setSelectedFiles] = useState<Array<{ file_name: string, language: string, document_type: string }>>([]); 
     const [modalOpen, setModalOpen] = useState(false); 
     
@@ -52,9 +62,13 @@ const ProductWidget = () => {
     const dropFileFromDB = async (index: number) => {
         try {
             let file_name = relatedFiles[index].file_name;
-            let id = await getProductIdFromUrl();
+            let productId = await getProductIdFromUrl();
 
-            let response = await fetch('http://localhost:9000/admin/product-documents/delete', {
+            let file_id = relatedFiles[index].file_id;
+
+            let id = productAttachments[index].id;
+
+            let response = await fetch(`http://localhost:9000/admin/attachments/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +76,6 @@ const ProductWidget = () => {
                 credentials: 'include',
                 body: JSON.stringify({
                     id: id,
-                    file_name: file_name,
                 }),
             });
 
@@ -83,7 +96,7 @@ const ProductWidget = () => {
     const fetchData = async () => {
         try {
 
-            const response = await fetch(`http://localhost:9000/admin/product-documents/get?product_id=${getProductIdFromUrl()}`, {
+            const response = await fetch(`http://localhost:9000/admin/attachments/${getProductIdFromUrl()}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,8 +109,10 @@ const ProductWidget = () => {
             }
 
             const result = await response.json();
-            setRelatedFiles(result);
+            setRelatedFiles(result.attachments);
+            setProductAttachments(result.productAttachments);
             console.log(result);
+            console.log('Updated');
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -135,8 +150,10 @@ const ProductWidget = () => {
             formData.append('files', file); 
         });
     
+        const productId = await getProductIdFromUrl();
+
         try {
-            const response = await fetch('http://localhost:9000/admin/product-documents/save-file', {
+            const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/save-file`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include', 
@@ -164,14 +181,19 @@ const ProductWidget = () => {
                 })),
             };
 
+            const productId = await getProductIdFromUrl();
+
             try {
-                const response = await fetch('http://localhost:9000/admin/product-documents/upload', {
+                const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     credentials: 'include', 
-                    body: JSON.stringify(dataToSend),
+                    body: JSON.stringify({
+                        attachments: dataToSend.documents,
+                        product_id: productId
+                    })
                 });
 
                 if (response.ok) {

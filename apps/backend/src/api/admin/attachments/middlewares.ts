@@ -1,0 +1,60 @@
+import { MiddlewareRoute } from "@medusajs/medusa";
+import {
+    validateAndTransformBody,
+    validateAndTransformQuery,
+} from "@medusajs/framework/http";
+import {
+    transformQueryConfig,
+    retrieveTransformQueryConfig,
+} from "./query-config";
+import {
+    AdminListAttachmentsParams,
+    AdminGetAttachmentParams,
+    AdminCreateAttachment,
+    AdminDeleteAttachment,
+    AdminUploadAttachmentBody,
+} from "./validators";
+
+export const adminAttachmentsMiddlewares: MiddlewareRoute[] = [
+    {
+        method: ["GET"],
+        matcher: "/admin/attachments",
+        middlewares: [
+            validateAndTransformQuery(
+                AdminListAttachmentsParams,
+                transformQueryConfig
+            ),
+        ],
+    },
+    {
+        method: ["GET"],
+        matcher: "/admin/attachments/:id",
+        middlewares: [
+            validateAndTransformQuery(
+                AdminGetAttachmentParams,
+                retrieveTransformQueryConfig
+            ),
+        ],
+    },
+    {
+        method: ["POST"],
+        matcher: "/admin/attachments/:id/upload",
+        middlewares: [
+            validateAndTransformBody(AdminUploadAttachmentBody),
+        ],
+    },
+    {
+        method: ["DELETE"],
+        matcher: "/admin/attachments/:id/delete",
+        middlewares: [
+            validateAndTransformBody(AdminDeleteAttachment),
+        ],
+    },
+    {
+        method: ["POST"],
+        matcher: "/admin/attachments/:id/save-file",
+        middlewares: [
+            validateAndTransformBody(AdminCreateAttachment),
+        ],
+    },
+];

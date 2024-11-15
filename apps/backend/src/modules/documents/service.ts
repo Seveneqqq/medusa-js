@@ -1,8 +1,10 @@
 import { MedusaService } from "@medusajs/framework/utils"
-import Document from "./models/document"
+import attachment from "./models/attachment"
+import product_attachment from "./models/product_attachment"
 
 class DocumentModuleService extends MedusaService({
-  Document,
+  product_attachment,
+  attachment,
 }){
 }
 

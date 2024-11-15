@@ -1,32 +1,39 @@
-import { Pool } from "pg";
-import dotenv from 'dotenv';
+import type {
+    AuthenticatedMedusaRequest,
+    MedusaResponse,
+} from "@medusajs/framework";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { RemoteQueryFunction } from "@medusajs/framework/types";
+import DocumentModuleService from "src/modules/documents/service";
 
-dotenv.config();
+export const POST = async(
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) =>{
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, 
-});
-
-export const DELETE = async (req: any, res: any) => {
     try {
-        const id = req.body.id; 
-        const file_name = req.body.file_name;
+        
+        const { id } = req.body;
 
-        const deleteProductFilesSql = `
-            DELETE FROM product_file 
-            WHERE file_id = (SELECT file_id FROM file WHERE file_name = $1 LIMIT 1) and product_id = $2
-        `;
-        const result = await pool.query(deleteProductFilesSql, [file_name,id]);
+        const documentModuleService = req.scope.resolve<DocumentModuleService>(
+            "documentModuleService"
+        );
 
-        // Następnie usuwamy rekord z tabeli file
-        // const deleteFileSql = `
-        //     DELETE FROM file 
-        //     WHERE file_name = $1 AND file_id = (SELECT file_id FROM file WHERE file_name = $1 LIMIT 1)
-        // `;
-        // const result = await pool.query(deleteFileSql, [file_name]);
+        const attachments = await documentModuleService.deleteProduct_attachments(
+            {
+                id
+            }
+        );
 
-        res.status(200).json({ message: 'Document deleted successfully',id: id, affectedRows: result.rowCount });
+        console.log(attachments);
+
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        return res.status(500).json({
+            message: "An error occurred while processing the request.",
+            error: error
+        });
     }
-};
+
+}
