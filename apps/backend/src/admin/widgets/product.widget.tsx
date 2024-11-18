@@ -185,7 +185,7 @@ const ProductWidget = () => {
             const productId = await getProductIdFromUrl();
 
             try {
-                const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/upload`, {
+                const response = await fetch(`http://localhost:9000/admin/attachments`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
