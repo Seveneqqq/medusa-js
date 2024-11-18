@@ -4,6 +4,7 @@ import { adminQuotesMiddlewares } from "./quotes/middlewares";
 import { adminCustomersMiddlewares } from "./customer/middlewares";
 import { adminAttachmentsMiddlewares } from "./attachments/middlewares"; 
 
+
 export const adminMiddlewares: MiddlewareRoute[] = [
   ...adminCompaniesMiddlewares,
   ...adminQuotesMiddlewares,

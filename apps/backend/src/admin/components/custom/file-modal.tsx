@@ -40,9 +40,8 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
             });
             const dataFromResponse = await response.json();
             const data = dataFromResponse.attachments;
-            console.log('Fetched data:', data); // Debugging log
+            console.log('Fetched data:', data);
 
-            // Create a Set to remove duplicates
             const uniqueLanguages: any[] = Array.from(new Set(data.map(row => row.language)))
                 .map(lang => ({ label: lang, value: lang }));
 
@@ -50,7 +49,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
             setRows(data);
 
             const initialSelectionState = data.reduce((acc: Record<number | string, boolean>, row: { file_id: number | string }) => {
-                acc[row.file_id] = false; // Use file_id instead of id for selection state
+                acc[row.file_id] = false; 
                 return acc;
             }, {});
             setSelectedRows(initialSelectionState);
@@ -70,13 +69,13 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
 
     const handleConfirm = () => {
         const selectedFiles = rows.filter(row => selectedRows[row.file_id]).map(row => ({
-            file_id: row.file_id, // Use file_id instead of id
+            file_id: row.file_id, 
             file_name: row.file_name,
             language: row.language,
             document_type: row.document_type,
         }));
 
-        console.log('Selected files:', selectedFiles); // Debugging log
+        console.log('Selected files:', selectedFiles);
         setSelectedFiles(selectedFiles);
         let productId = getProductIdFromUrl();
         saveDataInDatabase(selectedFiles, productId);
@@ -98,7 +97,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
                 document_type: file.document_type
             }));
 
-            console.log('Saving documents:', documents); // Debugging log
+            console.log('Saving documents:', documents); 
 
             const response = await fetch(`http://localhost:9000/admin/attachments/${productId}/upload`, {
                 method: "POST",

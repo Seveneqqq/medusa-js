@@ -25,7 +25,7 @@ export const POST = async (req: any, res: any) => {
             const file = req.body.file_name; 
 
             
-            const uploadDir = path.join(__dirname, '../../../../../uploads');
+            const uploadDir = path.join(__dirname, '../../../../../../uploads');
             const filePath = path.join(uploadDir, file);
 
             

@@ -22,9 +22,7 @@ export const POST = async (
         try {
 
             const {email} = req.body;
-            console.log('email ' +email)
-
-
+            
             if (!email) {
                 return res.status(400).json({
                   error: "Email is required"
@@ -44,8 +42,6 @@ export const POST = async (
                 });
               }
              
-
-            console.log('email:' +email);
 
             const { result } = await createApprovalWorkflow(req.scope).run({
                 input: req.body,
