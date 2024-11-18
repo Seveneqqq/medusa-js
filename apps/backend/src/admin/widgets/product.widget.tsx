@@ -40,6 +40,7 @@ const ProductWidget = () => {
 
     const editDocument = () => {
         // todo
+        //modal z wyswietleniem wszystkich informacji
     };
 
     const deleteDocument = (index: number, type: string) => {
