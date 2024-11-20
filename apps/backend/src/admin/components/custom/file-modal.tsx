@@ -90,14 +90,14 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
 
     const saveDataInDatabase = async (selectedFiles, productId) => {
         try {
-            const documents = selectedFiles.map(file => ({
+            const attachments = selectedFiles.map(file => ({
                 file_id: file.file_id,
                 file_name: file.file_name,
                 language: file.language,
                 document_type: file.document_type
             }));
 
-            console.log('Saving documents:', documents); 
+            console.log('Saving attachments:', attachments); 
 
             const response = await fetch(`http://localhost:9000/admin/attachments`, {
                 method: "POST",
@@ -106,7 +106,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
                 },
                 body: JSON.stringify({ 
                     product_id: productId, 
-                    attachments: documents 
+                    attachments: attachments 
                 }),
                 credentials: "include",
             });
@@ -119,7 +119,7 @@ export const FileModal: React.FC<FileModalProps> = ({ onClose, setSelectedFiles 
             console.log("Data saved in database:", data);
 
             toast.info("Data saved successfully.", {
-                description: "Documents have been added to the database.",
+                description: "Attachments have been added to the database.",
             });
         } catch (error) {
             console.error("Error saving data in database:", error);
