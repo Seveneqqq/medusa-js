@@ -2,54 +2,21 @@ import type {
     AuthenticatedMedusaRequest,
     MedusaResponse,
 } from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { RemoteQueryFunction } from "@medusajs/framework/types";
-import DocumentModuleService from "src/modules/documents/service";
-
-export const DELETE = async(
-    req: AuthenticatedMedusaRequest,
-    res: MedusaResponse
-) =>{
-
-    try {
-        
-        const { id } = req.body;
-
-        const documentModuleService = req.scope.resolve<DocumentModuleService>(
-            "documentModuleService"
-        );
-
-        const attachments = await documentModuleService.deleteProduct_attachments(id);
-
-        res.status(200).json({Succes:attachments});
-
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: "An error occurred while processing the request.",
-            error: error
-        });
-    }
-
-}
+import AttachmentsModuleService from "src/modules/attachments/service";
 
 export const GET = async (
     req: AuthenticatedMedusaRequest,
     res: MedusaResponse
 ) => {
     try {
-        const query = req.scope.resolve<RemoteQueryFunction>(
-            ContainerRegistrationKeys.QUERY
-        );
-
+        
         const product_id = req.params.id;
 
-        const documentModuleService = req.scope.resolve<DocumentModuleService>(
-            "documentModuleService"
+        const AttachmentsModuleService = req.scope.resolve<AttachmentsModuleService>(
+            "AttachmentsModuleService"
         );
 
-        const [product_attachments] = await documentModuleService.listAndCountProduct_attachments(
+        const [product_attachments] = await AttachmentsModuleService.listAndCountProduct_attachments(
             {
                 product_id: product_id,
             },
@@ -58,11 +25,9 @@ export const GET = async (
             }
         );
 
-        const productAttachments = product_attachments;
-
         const attachmentsArrays = await Promise.all(
             product_attachments.map(async (doc: any) => {
-                const attachment = await documentModuleService.listAttachments(
+                const attachment = await AttachmentsModuleService.listAttachments(
                     {
                         file_id: doc.file_id,
                     },
@@ -77,7 +42,7 @@ export const GET = async (
         const attachments = attachmentsArrays.flat().filter(attachment => Object.keys(attachment).length > 0);
 
         res.status(200).json({
-            attachments, productAttachments
+            attachments, product_attachments
         });
     } catch (error) {
         console.error("Error fetching attachments:", error);

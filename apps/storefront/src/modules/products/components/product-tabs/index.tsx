@@ -70,7 +70,7 @@ const ProductSpecsTab = ({ product }: ProductTabsProps) => {
 };
 
 const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [attachments, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
 
@@ -108,7 +108,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
 
 
     }catch (error) {
-      console.error("Error fetching documents:", error);
+      console.error("Error fetching attachments:", error);
     }
     
   };
@@ -116,7 +116,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
   useEffect(() => {
     const fetchDocuments = async () => {
 
-      console.log('documents');
+      console.log('attachments');
 
       try {
         const response = await fetch(`http://localhost:9000/store/attachments?product_id=${product.id}`, {
@@ -129,7 +129,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
         const data = await response.json();
         setDocuments(data.attachments); 
       } catch (error) {
-        console.error("Error fetching documents:", error);
+        console.error("Error fetching attachments:", error);
       } finally {
         setLoading(false); 
       }
@@ -139,7 +139,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
   }, [product.id]);
 
   if (loading) {
-    return <p>Loading documents...</p>; 
+    return <p>Loading attachments...</p>; 
   }
 
   return (
@@ -152,8 +152,8 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
           <Table.Cell className="px-4 text-center">Download</Table.Cell>
         </Table.Header>
         <Table.Body>
-          {documents.length > 0 ? (
-            documents.map((doc) => (
+          {attachments.length > 0 ? (
+            attachments.map((doc) => (
               <Table.Row key={doc.id}>
                 <Table.Cell className="border-r">
                   <span className="font-semibold">{doc.file_name}</span>
@@ -166,7 +166,7 @@ const ProductDocumentsTab = ({ product }: ProductTabsProps) => {
           ) : (
             <Table.Row>
               <Table.Cell className="text-center">
-                No documents available.
+                No attachments available.
               </Table.Cell>
               <Table.Cell className="text-center"></Table.Cell>
               <Table.Cell className="text-center"></Table.Cell>

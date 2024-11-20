@@ -30,8 +30,8 @@ module.exports = defineConfig({
     },
   },
   modules: {
-    documentModuleService: {
-      resolve: "./modules/documents",
+    AttachmentsModuleService: {
+      resolve: "./modules/attachments",
     },
     customerApprovedModuleService: {
       resolve: "./modules/customer-approved",

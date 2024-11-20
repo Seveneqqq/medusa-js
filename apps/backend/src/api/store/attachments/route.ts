@@ -4,7 +4,7 @@ import type {
 } from "@medusajs/framework";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteQueryFunction } from "@medusajs/framework/types";
-import DocumentModuleService from "src/modules/documents/service";
+import AttachmentsModuleService from "src/modules/attachments/service";
 import cors from 'cors';
 
 const corsOptions = {
@@ -24,11 +24,11 @@ export const GET = async (
             );
     
             const product_id = req.query.product_id;
-            const documentModuleService = req.scope.resolve<DocumentModuleService>(
-                "documentModuleService"
+            const attachmentsModuleService = req.scope.resolve<AttachmentsModuleService>(
+                "AttachmentsModuleService"
             );
     
-            const [product_attachments] = await documentModuleService.listAndCountProduct_attachments(
+            const [product_attachments] = await attachmentsModuleService.listAndCountProduct_attachments(
                 {
                     product_id: product_id,
                 },
@@ -39,7 +39,7 @@ export const GET = async (
     
             const attachmentsArrays = await Promise.all(
                 product_attachments.map(async (doc: any) => {
-                    const attachment = await documentModuleService.listAttachments(
+                    const attachment = await attachmentsModuleService.listAttachments(
                         {
                             file_id: doc.file_id,
                         },

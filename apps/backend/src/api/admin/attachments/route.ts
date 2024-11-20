@@ -4,7 +4,7 @@ import type {
 } from "@medusajs/framework";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 import { RemoteQueryFunction } from "@medusajs/framework/types";
-import DocumentModuleService from "src/modules/documents/service";
+import AttachmentsModuleService from "src/modules/attachments/service";
 
 
 export const GET = async (
@@ -17,11 +17,11 @@ export const GET = async (
             ContainerRegistrationKeys.QUERY
         );
 
-        const documentModuleService = req.scope.resolve<DocumentModuleService>(
-            "documentModuleService"
+        const AttachmentsModuleService = req.scope.resolve<AttachmentsModuleService>(
+            "AttachmentsModuleService"
         );
 
-        const attachments = await documentModuleService.listAttachments();
+        const attachments = await AttachmentsModuleService.listAttachments();
 
         res.status(200).json({
             attachments
@@ -54,8 +54,8 @@ export const POST = async (
 
         console.log("Processing attachments:", product_id, attachments);
 
-        const documentModuleService = req.scope.resolve<DocumentModuleService>(
-            "documentModuleService"
+        const AttachmentsModuleService = req.scope.resolve<AttachmentsModuleService>(
+            "AttachmentsModuleService"
         );
 
         const results = await Promise.all(
@@ -64,7 +64,7 @@ export const POST = async (
                     
                     const generatedFileId = generateFileId(doc.file_name);
 
-                    const newAttachment = await documentModuleService.createAttachments({
+                    const newAttachment = await AttachmentsModuleService.createAttachments({
                         file_id: generatedFileId,
                         file_name: doc.file_name,
                         language: doc.language,
@@ -72,7 +72,7 @@ export const POST = async (
                         created_at: new Date()
                     });
 
-                    await documentModuleService.createProduct_attachments({
+                    await AttachmentsModuleService.createProduct_attachments({
                         product_id: product_id,
                         file_id: newAttachment.file_id
                     });
@@ -85,7 +85,7 @@ export const POST = async (
                         message: 'Attachment created and linked successfully'
                     };
                 } catch (error) {
-                    console.error(`Error processing document ${doc.file_name}:`, error);
+                    console.error(`Error processing attachment ${doc.file_name}:`, error);
                     return {
                         success: false,
                         file_name: doc.file_name,
@@ -127,10 +127,40 @@ export const POST = async (
         });
 
     } catch (error) {
-        console.error('Error in document processing:', error);
+        console.error('Error in attachment processing:', error);
         return res.status(500).json({
             message: 'An error occurred while processing the attachments',
             error: error instanceof Error ? error.message : String(error)
         });
     }
 };
+
+export const DELETE = async(
+    req: AuthenticatedMedusaRequest,
+    res: MedusaResponse
+) =>{
+
+    try {
+        
+        const { id } = req.body;
+
+        console.log("Deleting attachments for product:", id);
+
+        const AttachmentsModuleService = req.scope.resolve<AttachmentsModuleService>(
+            "AttachmentsModuleService"
+        );
+
+        const attachments = await AttachmentsModuleService.deleteProduct_attachments(id);
+
+        res.status(200).json({Succes:attachments});
+
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "An error occurred while processing the request.",
+            error: error
+        });
+    }
+
+}
