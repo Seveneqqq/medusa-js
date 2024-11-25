@@ -5,4 +5,5 @@ import { defineLink } from "@medusajs/framework/utils"
 export default defineLink(
     customerApprovedModule.linkable.customerApproved,
     CustomerModule.linkable.customer
+    
 )

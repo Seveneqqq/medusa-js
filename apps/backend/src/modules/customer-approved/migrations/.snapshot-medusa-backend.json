@@ -6,6 +6,15 @@
   "tables": [
     {
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
         "email": {
           "name": "email",
           "type": "text",
@@ -62,9 +71,17 @@
       "schema": "public",
       "indexes": [
         {
+          "keyName": "IDX_customer_approved_email_unique",
+          "columnNames": [],
+          "composite": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_customer_approved_email_unique\" ON \"customer_approved\" (email) WHERE deleted_at IS NULL"
+        },
+        {
           "keyName": "customer_approved_pkey",
           "columnNames": [
-            "email"
+            "id"
           ],
           "composite": false,
           "primary": true,

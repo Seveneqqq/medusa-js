@@ -71,7 +71,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     await sdk.client.setToken(token);
 
-    await addToApproval(formData.get("email") as string);
+    await addToApproval(formData.get("email") as string, createdCustomer?.id);
 
     const companyForm = {
       name: formData.get("company_name") as string,
@@ -112,7 +112,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
   }
 }
 
-async function addToApproval(email: string){
+async function addToApproval(email: string, customer_id: string){
 
   try{
     const response = await fetch(`http://localhost:9000/store/customer/${email}/add-to-approval`,{
@@ -122,7 +122,7 @@ async function addToApproval(email: string){
         'Content-Type': 'application/json',
         'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
       },
-      body: JSON.stringify({ "email": email }),
+      body: JSON.stringify({ "email": email, "customer_id": customer_id }),
     });
 
     const data = await response.json();
