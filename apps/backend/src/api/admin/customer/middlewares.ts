@@ -1,13 +1,10 @@
 import { MiddlewareRoute } from "@medusajs/medusa";
 import {
     validateAndTransformBody,
-    validateAndTransformQuery,
 } from "@medusajs/framework/http";
 
 import {
-    AdminListCustomersParams,
     AdminActivateCustomersBody,
-    AdminCustomerSearchParams,
 } from "./validators";
 
 export const adminCustomersMiddlewares: MiddlewareRoute[] = [

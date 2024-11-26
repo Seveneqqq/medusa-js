@@ -1,6 +1,5 @@
 import { MiddlewareRoute } from "@medusajs/medusa";
 import {
-    validateAndTransformBody,
     validateAndTransformQuery,
 } from "@medusajs/framework/http";
 import {
@@ -39,7 +38,7 @@ export const adminAttachmentsMiddlewares: MiddlewareRoute[] = [
     },
     {
         method: ["DELETE"],
-        matcher: "/admin/attachments/:id/delete",
+        matcher: "/admin/attachments",
     },
     {
         method: ["POST"],

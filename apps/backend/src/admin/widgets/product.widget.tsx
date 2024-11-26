@@ -62,14 +62,12 @@ const ProductWidget = () => {
 
     const dropFileFromDB = async (index: number) => {
         try {
-            let file_name = relatedFiles[index].file_name;
-            let productId = await getProductIdFromUrl();
-
-            let file_id = relatedFiles[index].file_id;
-
+ 
+            console.log(productAttachments[index].id);
             let id = productAttachments[index].id;
+            
 
-            let response = await fetch(`http://localhost:9000/admin/attachments/${productId}`, {
+            let response = await fetch(`http://localhost:9000/admin/attachments`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +109,7 @@ const ProductWidget = () => {
 
             const result = await response.json();
             setRelatedFiles(result.attachments);
-            setProductAttachments(result.productAttachments);
+            setProductAttachments(result.product_attachments);
             console.log(result);
             console.log('Updated');
         } catch (error) {
@@ -175,7 +173,7 @@ const ProductWidget = () => {
         if (uploadedFiles.length > 0) {
             const dataToSend = {
                 product_id: getProductIdFromUrl(),
-                documents: uploadedFiles.map(item => ({
+                attachments: uploadedFiles.map(item => ({
                     file_name: item.fileName,
                     language: item.language,
                     document_type: item.documentType,
@@ -192,7 +190,7 @@ const ProductWidget = () => {
                     },
                     credentials: 'include', 
                     body: JSON.stringify({
-                        attachments: dataToSend.documents,
+                        attachments: dataToSend.attachments,
                         product_id: productId
                     })
                 });
@@ -273,7 +271,7 @@ const ProductWidget = () => {
         <Container className="divide-y p-0">
             <Toaster />
             <div className="flex items-center justify-between px-6 py-4">
-                <Heading level="h2">Documents</Heading>
+                <Heading level="h2">Attachments</Heading>
             </div>
 
             {/* File upload section */}

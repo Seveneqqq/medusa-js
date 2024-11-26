@@ -12,7 +12,7 @@ export default defineMiddlewares({
     ...adminMiddlewares,
     ...storeMiddlewares,
     {
-      matcher: "/admin/product-documents/get-all",
+      matcher: "/admin/attachments/get-all",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
       ],
@@ -60,13 +60,13 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher: "/admin/product-documents/get",
+      matcher: "/admin/attachments/get",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
       ],
     },
     {
-      matcher: "/admin/product-documents/upload",
+      matcher: "/admin/attachments/upload",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
       ],
@@ -78,13 +78,13 @@ export default defineMiddlewares({
     //   ],
     // },
     {
-      matcher: "/admin/product-documents/save-file",
+      matcher: "/admin/attachments/save-file",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
       ],
     },
     {
-      matcher: "/admin/product-documents/delete",
+      matcher: "/admin/attachments/delete",
       middlewares: [
         authenticate("user", ["session", "bearer", "api-key"])
       ],
