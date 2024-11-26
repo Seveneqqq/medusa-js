@@ -31,7 +31,7 @@ export const GET = async (
       
          const email  = req.query.email;
 
-         const { data: [customer_approved] } = await query.graph(
+         const { data: customer_approved } = await query.graph(
             {
               entity: "customer",
               fields: ["id", "email", "first_name", "last_name", "customer_approved.approved"],

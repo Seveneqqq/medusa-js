@@ -11,10 +11,9 @@ import {
   RemoteLink,
 } from "@medusajs/framework/modules-sdk"
 import { Modules } from "@medusajs/framework/utils"
-import CustomerApprovedModuleService from "src/modules/customer-approved/service";
-
+import { CUSTOMER_APPROVED_MODULE } from "../../../../../modules/customer-approved"
 import {createApprovalWorkflow} from "../../../../../workflows/customer"
-import CustomerApproved from 'src/modules/customer-approved/models/customer-approved'
+
 
 dotenv.config()
 
@@ -62,10 +61,10 @@ export const POST = async (
              
             await remoteLink.create({
               [Modules.CUSTOMER]: {
-                id: "321",
+                id: customer_id,
               },
-              customerApprovedModuleService: {
-                id: "123",
+              [CUSTOMER_APPROVED_MODULE]: {
+                id: result.id,
               },
             })
             

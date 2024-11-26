@@ -35,13 +35,6 @@ module.exports = defineConfig({
     },
     customerApprovedModuleService: {
       resolve: "./modules/customer-approved",
-      options: {
-        links: [{
-          moduleKey: Modules.CUSTOMER,
-          primaryKey: 'id',
-          foreignKey: 'id'
-        }]
-      }
     },
     companyModuleService: {
       resolve: "./modules/company",
