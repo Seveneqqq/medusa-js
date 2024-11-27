@@ -7,9 +7,7 @@ import type {
     MedusaResponse,
 } from "@medusajs/framework";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { CUSTOMER_APPROVED_MODULE } from 'src/modules/customer-approved';
 import { RemoteQueryFunction } from "@medusajs/framework/types";
-import CustomerApprovedModuleService from "src/modules/customer-approved/service";
 
 dotenv.config();
 
@@ -41,21 +39,7 @@ export const GET = async (
             },
             { throwIfKeyNotFound: true }
           );
-      
-        //  const customerApprovedModuleService =
-        //     req.scope.resolve<CustomerApprovedModuleService>(
-        //        "customerApprovedModuleService"
-        //     );
-      
-        //  const customer_approved =
-        //     await customerApprovedModuleService.listCustomerApproveds({
-        //        email: email,
-        //     },
-        //     {
-        //       select: ["email", "approved"],
-        //     }
-        //   );
-      
+ 
          res.status(200).json({
             customer_approved
          });

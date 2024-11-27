@@ -22,7 +22,14 @@ export const StoreCustomerSearchParams = z.object({
     approved: z.boolean().optional(),
 });
 
-// Typy na podstawie schematów
+export const addToApprovalValidator = z.object({
+    email: z.string()
+        .email("Invalid email format")
+        .min(1, "Email is required"),
+    customer_id: z.string()
+        .min(1, "Customer ID is required")
+ });
+
 export type StoreCustomerParamsType = z.infer<typeof StoreCustomerParams>;
 export type StoreCustomerApprovalBodyType = z.infer<typeof StoreCustomerApprovalBody>;
 export type StoreCustomerSearchParamsType = z.infer<typeof StoreCustomerSearchParams>;
