@@ -60,11 +60,11 @@ export const POST = async (
             )
              
             await remoteLink.create({
-              [Modules.CUSTOMER]: {
-                id: customer_id,
+              "customerApprovedModuleService": {
+                customer_approved_id: result.id,
               },
-              [CUSTOMER_APPROVED_MODULE]: {
-                id: result.id,
+              [Modules.CUSTOMER]: {
+                customer_id: customer_id,
               },
             })
             
