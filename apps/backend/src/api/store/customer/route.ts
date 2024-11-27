@@ -31,30 +31,30 @@ export const GET = async (
       
          const email  = req.query.email;
 
-        //  const {
-        //     data: [customer_approved],
-        //  } = await query.graph(
-        //     {
-        //        entity: "customer_approved",
-        //        fields: [],
-        //        filters: { id },
-        //     },
-        //     { throwIfKeyNotFound: true }
-        //  );
-      
-         const customerApprovedModuleService =
-            req.scope.resolve<CustomerApprovedModuleService>(
-               "customerApprovedModuleService"
-            );
-      
-         const customer_approved =
-            await customerApprovedModuleService.listCustomerApproveds({
-               email: email,
-            },
+         const { data: [customer_approved] } = await query.graph(
             {
-              select: ["email", "approved"],
-            }
+              entity: "customer",
+              fields: ["customer_approved.approved"],
+              filters: {
+                email,
+              },
+            },
+            { throwIfKeyNotFound: true }
           );
+      
+        //  const customerApprovedModuleService =
+        //     req.scope.resolve<CustomerApprovedModuleService>(
+        //        "customerApprovedModuleService"
+        //     );
+      
+        //  const customer_approved =
+        //     await customerApprovedModuleService.listCustomerApproveds({
+        //        email: email,
+        //     },
+        //     {
+        //       select: ["email", "approved"],
+        //     }
+        //   );
       
          res.status(200).json({
             customer_approved

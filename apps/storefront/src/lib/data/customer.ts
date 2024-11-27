@@ -182,7 +182,7 @@ async function checkApproved(email: string) {
   });
   const data = await response.json();
 
-  return data.customer_approved[0].approved;
+  return data.customer_approved.customer_approved.approved;
 
   }catch(err){
     console.error("Something goes wrong:", err);
