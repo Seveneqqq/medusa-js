@@ -36,7 +36,6 @@ export const POST = async (
             }
 
             const { email } = validationResult.data;
-            console.log('emmmmmmm ' +email);
 
             const { result } = await createApprovalWorkflow(req.scope).run({
               //@ts-ignore
