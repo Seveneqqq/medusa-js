@@ -1,15 +1,9 @@
-import { Pool } from "pg";
 import dotenv from 'dotenv';
 import cors from 'cors';
 import path from "path";
 import fs from 'fs';
 
 dotenv.config();
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
-
 
 const corsOptions = {
     origin: process.env.STORE_CORS, 

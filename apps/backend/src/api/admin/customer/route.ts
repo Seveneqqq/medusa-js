@@ -4,7 +4,7 @@ import type {
   } from "@medusajs/framework";
   import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
   import { RemoteQueryFunction } from "@medusajs/framework/types";
-  import CustomerApprovedModuleService from "src/modules/customer-approved/service";
+ 
   
   export const GET = async (
     req: AuthenticatedMedusaRequest,
@@ -12,6 +12,7 @@ import type {
   ) => {
   
     try {
+      
       const { page, limit } = req.query;
       const pageNum = parseInt(page as string) || 0;
       const limitNum = parseInt(limit as string) || 20;

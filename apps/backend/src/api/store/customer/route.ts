@@ -39,21 +39,7 @@ export const GET = async (
             },
             { throwIfKeyNotFound: true }
           );
-      
-        //  const customerApprovedModuleService =
-        //     req.scope.resolve<CustomerApprovedModuleService>(
-        //        "customerApprovedModuleService"
-        //     );
-      
-        //  const customer_approved =
-        //     await customerApprovedModuleService.listCustomerApproveds({
-        //        email: email,
-        //     },
-        //     {
-        //       select: ["email", "approved"],
-        //     }
-        //   );
-      
+ 
          res.status(200).json({
             customer_approved
          });
