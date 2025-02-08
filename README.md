@@ -1,30 +1,30 @@
-<h1 align="center">Nowe funkcjonalności:</h1>
-  <ol>
-    <li>
-      <h3>Moduł dokumentów</h3>
-      <ul>
-        <li>Dodawanie i usuwanie plików dla wybranego produktu z podziałem na języki i rodzaje dokumentów</li>
-        <li>Dialog do przeglądania wszystkich plików które są już zapisane, umożliwia szybkie przypisanie całego kompletu dokumentów do innego produktu</li>
-        <li>Zapisywanie plików lokalnie w folderze /backend/uploads</li>
-        <li>Zapisywanie do bazy PostgreSQL</li>
-      </ul>
-    </li>
-    <li>
-      <h3>Moduł zatwierdzania użytkowników</h3>
-      <ul>
-        <li>Zarejestrowani użytkownicy muszą zostać zaakceptowani przez administratora</li>
-        <li>Administrator może w łatwy i szybki sposób przejrzeć i zaakceptować wielu użytkowników jednocześnie</li>
-      </ul>
-    </li>
-    <li>
-      <h3>Migracje bazy danych</h3>
-      <ul>
-        <li>Dodanie tabeli PRODUCT_ATTACHMENT I ATTACHMENT</li>
-        <li>Dodanie tabeli CUSTOMER_APPROVED</li>
-        <li>Utworzenie plików migracyjnych</li>
-      </ul>
-    </li>
-  </ol>
+<h1 align="center">New Features:</h1>
+<ol>
+  <li>
+    <h3>Documents Module</h3>
+    <ul>
+      <li>Adding and removing files for selected products with categorization by languages and document types</li>
+      <li>Dialog for browsing all saved files, enabling quick assignment of complete document sets to other products</li>
+      <li>Local file storage in the /backend/uploads folder</li>
+      <li>PostgreSQL database storage</li>
+    </ul>
+  </li>
+  <li>
+    <h3>User Approval Module</h3>
+    <ul>
+      <li>Registered users must be approved by an administrator</li>
+      <li>Administrator can easily and quickly review and approve multiple users simultaneously</li>
+    </ul>
+  </li>
+  <li>
+    <h3>Database Migrations</h3>
+    <ul>
+      <li>Addition of PRODUCT_ATTACHMENT and ATTACHMENT tables</li>
+      <li>Addition of CUSTOMER_APPROVED table</li>
+      <li>Creation of migration files</li>
+    </ul>
+  </li>
+</ol>
 
 
 <h1 align="center">
